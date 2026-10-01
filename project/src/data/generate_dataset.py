@@ -52,6 +52,8 @@ def generate(cfg: dict, n_train: int | None = None, n_val: int | None = None,
 
     filt = build_filter(cfg)
     freqs = make_freqs(cfg)
+    split_ghz = float(cfg["frequency"].get("extrap_split_ghz", freqs[-1] / 1e9))
+    extrap_split_idx = int(np.searchsorted(freqs, split_ghz * 1e9, side="right"))
     ranges = dict(cfg["geometry"])
     ranges["sampling"] = ds.get("sampling", "uniform")
 
@@ -70,6 +72,7 @@ def generate(cfg: dict, n_train: int | None = None, n_val: int | None = None,
 
     return {
         "freq": freqs,
+        "extrap_split_idx": np.array([extrap_split_idx]),
         "geom_train": geom_tr, "s_train": s_tr,
         "geom_val": geom_va, "s_val": s_va,
         "geom_test": geom_te, "s_test": s_te,
@@ -98,6 +101,9 @@ def main() -> None:
     print(f"saved {out}")
     print(f"  order      : {int(data['order'][0])}  (geometry dim {int(data['n_geom'][0])})")
     print(f"  freq points: {len(data['freq'])}  ({data['freq'][0]/1e9:.2f}-{data['freq'][-1]/1e9:.2f} GHz)")
+    k = int(data["extrap_split_idx"][0])
+    print(f"  interpolation band: {data['freq'][0]/1e9:.2f}-{data['freq'][k-1]/1e9:.2f} GHz ({k} pts)")
+    print(f"  extrapolation band: {data['freq'][k]/1e9:.2f}-{data['freq'][-1]/1e9:.2f} GHz ({len(data['freq'])-k} pts)")
     print(f"  train/val/test: {len(data['geom_train'])}/{len(data['geom_val'])}/{len(data['geom_test'])}")
 
 

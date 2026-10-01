@@ -1,11 +1,12 @@
-# Neural-Operator Surrogate + Generative Inverse Design for an RF Front-End Digital Twin
+# DeepRF — Deep Learning for RF/Microwave Design
 
 ELEC5404 / ELG6344 mini-project (Prof. Q.J. Zhang, Carleton University).
 
-A neural-operator surrogate learns the map from microstrip filter geometry to
-S-parameters, a knowledge-based branch injects microwave domain knowledge, a
-conditional VAE inverts the surrogate for instant geometry synthesis, and the
-whole chain is assembled into a front-end digital twin.
+Neural operators and generative models for microwave filter synthesis: a neural
+operator learns the map from microstrip filter geometry to S-parameters, a
+knowledge-based branch injects microwave domain knowledge, a conditional VAE
+inverts the model for instant geometry synthesis, and the chain is assembled
+into a front-end digital twin.
 
 ## Layout
 

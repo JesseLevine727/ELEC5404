@@ -1,5 +1,5 @@
 # ELEC5404 Mini-Project configuration
-# Neural-operator surrogate + generative inverse design for an RF front-end digital twin
+# DeepRF: deep learning for RF/microwave design
 
 seed: 0
 
@@ -33,6 +33,8 @@ frequency:
   f_start_ghz: 1.0
   f_stop_ghz: 3.0
   n_points: 201
+  # train on [f_start, extrap_split], test extrapolation on (extrap_split, f_stop]
+  extrap_split_ghz: 2.5
 
 dataset:
   n_train: 4000
