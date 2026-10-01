@@ -34,7 +34,7 @@ frequency:
   f_stop_ghz: 3.0
   n_points: 201
   # train on [f_start, extrap_split], test extrapolation on (extrap_split, f_stop]
-  extrap_split_ghz: 2.5
+  extrap_split_ghz: 1.9
 
 dataset:
   n_train: 4000

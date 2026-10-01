@@ -8,6 +8,41 @@ knowledge-based branch injects microwave domain knowledge, a conditional VAE
 inverts the model for instant geometry synthesis, and the chain is assembled
 into a front-end digital twin.
 
+## What is this project? (plain terms)
+
+**In one sentence:** teach a neural network to be a lightning-fast stand-in for an
+electromagnetic (EM) simulator, then use it *backwards* to design microwave
+filters on demand.
+
+**The problem.** Designing a microwave filter means choosing physical dimensions
+(resonator lengths, gaps, widths). To find out how a design behaves you run an EM
+simulation — accurate, but slow (minutes to hours each). So design becomes
+trial-and-error over hundreds of slow simulations.
+
+**The idea.**
+1. Run the simulator on many random designs → a dataset of
+   `dimensions -> frequency response (S-parameters)`.
+2. Train a neural network to copy that mapping; it then predicts the response in
+   microseconds instead of minutes.
+3. Invert it: give the network a *desired* response, and it outputs the
+   dimensions that produce it — design in one shot.
+
+Think of it as the network memorizing the simulator's "cheat sheet," so Maxwell's
+equations never have to be solved again for that class of filter.
+
+**What gets built.**
+
+| Step | What | Status |
+|---|---|---|
+| 1 | Data generator — analytic filter model, dimensions -> S-parameters (4000 samples) | done |
+| 2 | Forward model — dimensions -> response; MLP vs neural operator (DeepONet) | MLP done, DeepONet next |
+| 3 | Knowledge-based net — bake in microwave formulas to learn from less data | planned |
+| 4 | Inverse design — desired response -> dimensions, via a generative model (cVAE) | planned |
+| 5 | Stretch — transfer to new filters, augment scarce data, correct against real EM, front-end digital twin | planned |
+
+A "front-end digital twin" is a fast software replica of the whole receiver chain
+(filter + amplifier + mixer) that mirrors the real hardware.
+
 ## Layout
 
 ```
@@ -55,7 +90,7 @@ feed gaps, and line width.
 
 Tier 1 (core)
 - [x] Analytic filter model + dataset generator
-- [ ] MLP forward surrogate baseline
+- [x] MLP forward surrogate baseline
 - [ ] DeepONet neural operator + frequency-extrapolation study
 - [ ] KBNN knowledge-based branch + data-efficiency study
 - [ ] cVAE generative inverse design + verification
