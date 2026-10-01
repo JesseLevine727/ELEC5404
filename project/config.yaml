@@ -1,0 +1,42 @@
+# ELEC5404 Mini-Project configuration
+# Neural-operator surrogate + generative inverse design for an RF front-end digital twin
+
+seed: 0
+
+filter:
+  order: 3                 # number of coupled resonators (N)
+  f0_ghz: 2.0              # nominal centre frequency
+  fbw: 0.10                # nominal fractional bandwidth
+  ripple_db: 0.5           # Chebyshev passband ripple
+  z0: 50.0                 # system impedance
+  cr0_pf: 1.0              # nominal resonator capacitance
+  l0_mm: 10.0              # nominal resonator length
+  w0_mm: 1.0               # nominal line width
+
+  # coupling-gap -> coupling-coefficient mapping  k = k_max * exp(-S / s_decay)
+  k_max: 0.15
+  s_decay_mm: 0.5
+
+  # feed-gap -> external-Q mapping  Qe = qe0 * exp((S - s_ref) / s_q)
+  qe0: 16.0
+  s_ref_mm: 0.3
+  s_q_mm: 0.5
+
+geometry:
+  # sampling ranges (mm)
+  length_mm: [9.0, 11.0]   # per-resonator length
+  gap_mm: [0.10, 0.60]     # inter-resonator coupling gap
+  feed_mm: [0.10, 0.60]    # input/output feed gap
+  width_mm: [0.6, 1.4]     # line width
+
+frequency:
+  f_start_ghz: 1.0
+  f_stop_ghz: 3.0
+  n_points: 201
+
+dataset:
+  n_train: 4000
+  n_val: 500
+  n_test: 500
+  sampling: lhs            # lhs | uniform
+  out_dir: data

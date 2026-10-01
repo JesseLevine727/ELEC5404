@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Datasets & artefacts (regenerate via scripts)
+project/data/*.npz
+project/data/*.npy
+project/results/*
+!project/results/.gitkeep
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
