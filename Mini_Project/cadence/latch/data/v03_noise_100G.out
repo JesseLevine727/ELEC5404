@@ -1,0 +1,9 @@
+spectre v03_noise_100G: exit 0
+spectre completes with 0 errors, 0 warnings, and 59 notices.
+dv  0.00 mV:  184/400 '+' decisions  (P = 0.460; undecided 0)
+dv  0.20 mV:  237/400 '+' decisions  (P = 0.593; undecided 0)
+dv  0.40 mV:  289/400 '+' decisions  (P = 0.723; undecided 0)
+dv  0.60 mV:  323/400 '+' decisions  (P = 0.807; undecided 0)
+dv  0.80 mV:  358/400 '+' decisions  (P = 0.895; undecided 0)
+dv  1.20 mV:  392/400 '+' decisions  (P = 0.980; undecided 0)
+fit (100G): sigma_n = 0.580 mV rms (95 % interval 0.525 .. 0.647), mu = +0.065 mV

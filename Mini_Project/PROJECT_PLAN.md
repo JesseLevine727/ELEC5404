@@ -41,21 +41,23 @@ Low-threshold devices throughout gave τ ≈ 14 ps at first-cut sizes. Changed t
 | Decision time at ΔV_in ≈ ½ LSB (1 mV) | ≤ 100 ps | per-bit cycle ≈ 800 ps; the comparator gets about 300 ps, the rest goes to logic and DAC settling |
 | Regeneration time constant τ | ≤ ~15 ps | near metastability the latch sits at VDD/2; SVT is too close to threshold there (≈ 33–46 ps measured), LVT reaches ≈ 14 ps |
 | Metastability rate at 100 MS/s | < 10⁻⁶ per conversion | follows from a ~300 ps budget and τ ≈ 15 ps (metastable below about 0.4 nV) |
-| Input-referred noise | ≤ 0.5 mV rms (≈ LSB/4) | costs at most about 0.3 bit of ENOB; sets the input-pair gm and integration |
+| Input-referred noise | ≤ 0.65 mV rms (≈ LSB/3) | relaxed from 0.5 mV on 2026-10-30. Next to quantization noise it costs about 0.55 bit of ENOB (0.5 mV would cost 0.42). Reaching 0.5 mV would need extra X/Y capacitance, which slows exactly the delay and τ the models predict. |
 | Offset (mismatch, Monte Carlo) | ≤ ~5 mV, 1σ | static offset only becomes ADC offset (calibratable); not modeled |
 | Energy per comparison | ≤ ~50 fJ | about 11 decisions × 100 MS/s ≈ 50 µW |
 | Output load | output inverters + ~5 fF per side | stands in for the SAR logic |
 | Clock | 20 ps edges, reset while the clock is low | |
 
-**Verified (2026-10-29, nominal 27 °C, 1.0 V, VCM 0.5 V):**
-- t_d(1 mV) = 102 ps
-- τ = 9.5 ps, constant from 1 mV down to 1 nV
-- E = 30 fJ
-- offset σ = 2.27 mV (200-sample Monte Carlo)
-- noise σ = 0.60 mV rms (transient noise)
+**Verified (final design, 2026-10-30, nominal 27 °C, 1.0 V, VCM 0.5 V):**
+- t_d(1 mV) = 106 ps, 6 % over the ≤ 100 ps target. That target stood in for metastability, which is met with a wide margin: slack (300 ps − t_d)/τ = 19.5 → about 3×10⁻⁹ per conversion.
+- τ = 10.0 ps, constant from 1 mV down to 1 nV
+- E = 32 fJ
+- offset σ = 2.23 mV (200-sample Monte Carlo)
+- noise σ = 0.58 mV rms (transient noise)
+- **Kickback:** with C_DAC = 300 fF per side the common-mode kick is −12 mV. The residual differential error at the next comparison is −0.04 % (0.8 ns reset) to −0.14 % (0.2 ns reset) of the input: a gain error, not an offset.
+- **No decision memory** down to 1 µV with a 160 ps reset. This needed 1 µm reset switches (250 nm remembered decisions up to about 3 mV).
 
-Noise misses the 0.5 mV target. Widening the input pair or shrinking the tail did not change it, so the spec is an open decision (section 12).
-Across the dataset range τ varies from 5.5 ps (1.1 V) to about 17.5 ps (0.9 V, 85 °C).
+Noise meets the relaxed 0.65 mV spec. It missed the original 0.5 mV target, and widening the input pair or shrinking the tail did not change it.
+Across the dataset range τ varies from 5.9 ps (1.1 V) to about 18.6 ps (0.9 V, 85 °C).
 
 The 100 MS/s choice comes from the metastability "cliff". Assuming 80 ps delay at 1 mV and τ = 15 ps, the rate is about 4×10⁻⁷ per conversion at 100 MS/s but about 10⁻² at 200 MS/s. The application (section 7) sweeps fs from 50 to 400 MS/s across that cliff.
 
@@ -72,17 +74,17 @@ The 100 MS/s choice comes from the metastability "cliff". Assuming 80 ps delay a
     - input pair 12 µm (4 fingers)
     - tail 8 µm (4 fingers)
     - NMOS and PMOS latch 2 µm (2 fingers)
-    - reset switches 250 nm
+    - reset switches 1 µm (250 nm gave decision memory with a fast SAR reset)
     - output inverters 250 nm / 700 nm
   - **Details:** `cadence/latch/README.md`.
 - **Testbench:**
   - ideal clock
   - differential input VCM ± ΔV_in/2
-  - one comparison per simulation (fresh reset, so no memory between decisions)
+  - one comparison per simulation (fresh reset, so no memory between decisions). In a running SAR, later comparisons start from a partly recharged tail node and are about 1 % faster at 1 mV (latch README, kickback section); the dataset models the first-comparison delay.
 - **Measured quantities:**
   - **t_d:** clock 50 % crossing to the winning output crossing VDD/2. The losing output stays below 0.25 V, so this is effectively the differential crossing.
   - **E:** VDD × supply charge over one full reset + evaluate cycle.
-- **Spec verification** (not modeled): delay and τ, energy, noise (transient noise), offset (Monte Carlo) are done; kickback is still to do.
+- **Spec verification** (not modeled): delay and τ, energy, noise (transient noise), offset (Monte Carlo), kickback onto a capacitive DAC, and decision memory are all done (2026-10-30).
 
 ---
 
@@ -226,7 +228,7 @@ For a uniformly distributed input, the probability of a metastable event per con
 
 - [x] SAR target: 10-bit, **100 MS/s**, 1 V, VCM-based switching (VCM = 0.5 V), **LVT devices** (SVT first, changed to LVT after the first build; 2026-10-29).
 - [x] Temperature range: **0–85 °C**. Process corners are not a model input (nominal tt only).
-- [ ] Comparator noise spec: measured 0.60 mV rms vs the 0.5 mV target (≈ 0.55 vs 0.42 bit of ENOB). Either accept about 0.65 mV (LSB/3), or add X/Y capacitance, which costs speed and τ.
+- [x] Comparator noise spec: **relaxed to ≤ 0.65 mV rms** (LSB/3); measured 0.60 mV (2026-10-30).
 - [ ] Energy model in the KBNN: weak C_eff·VDD² prior or a plain network.
 - [ ] Optional KBNN variants (difference method, prior-knowledge input): include or not.
 - [ ] Optimizer comparison (Adam vs L-BFGS): include or not.

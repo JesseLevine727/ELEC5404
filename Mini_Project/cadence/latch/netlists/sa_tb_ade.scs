@@ -1,5 +1,5 @@
 // Generated for: spectre
-// Generated on: Oct 29 12:47:08 2026
+// Generated on: Oct 30 10:02:57 2026
 // Design library name: SAL45
 // Design cell name: STRONGARM_TB
 // Design view name: schematic
@@ -41,18 +41,18 @@ subckt STRONGARM CLK INN INP OUTN OUTP VDD VSS
     M1 (P INP TAIL VSS) g45n1lvt w=(12u) l=45n nf=4 as=1.32p ad=960f \
         ps=18.88u pd=12.64u nrd=6.66667m nrs=9.16667m sa=140n sb=140n \
         sd=160n sca=51.70957 scb=0.05398 scc=0.00640 m=(1)
-    S4 (Q CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
-        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
-        scb=0.10360 scc=0.01825 m=(1)
-    S3 (P CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
-        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
-        scb=0.10360 scc=0.01825 m=(1)
-    S2 (Y CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
-        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
-        scb=0.10360 scc=0.01825 m=(1)
-    S1 (X CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
-        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
-        scb=0.10360 scc=0.01825 m=(1)
+    S4 (Q CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    S3 (P CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    S2 (Y CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    S1 (X CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
     M6 (Y X VDD VDD) g45p1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
         pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
         scb=0.06569 scc=0.00861 m=(1)

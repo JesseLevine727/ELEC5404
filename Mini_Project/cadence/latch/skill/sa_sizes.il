@@ -6,5 +6,5 @@ cfWin    = "12u"   cfNFin   = "4"     ; input pair M1/M2
 cfWtail  = "8u"    cfNFtail = "4"     ; clocked tail M0
 cfWlatn  = "2u"    cfNFlatn = "2"     ; NMOS cross-coupled M3/M4
 cfWlatp  = "2u"    cfNFlatp = "2"     ; PMOS cross-coupled M5/M6
-cfWrst   = "250n"  cfNFrst  = "1"     ; PMOS reset switches S1-S4
+cfWrst   = "1u"    cfNFrst  = "1"     ; PMOS reset switches S1-S4 (1u: no decision memory with a 160 ps reset, explore_09)
 cfWinvn  = "250n"  cfWinvp  = "700n"  ; output inverters
