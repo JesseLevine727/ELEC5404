@@ -1,0 +1,21 @@
+// 00 - gpdk045 g45n1svt / g45p1svt bin continuity: Id/W across the W edges (0.3, 0.5, 1, 2 um) at L = 45n
+// and Id*L/W across the L edges (60n, 100n, 500n) at W = 1.5u. VGS = 0.7 V, VDS = 0.5 V (|.| for PMOS).
+simulator lang=spectre
+global 0
+parameters wv=1u lv=45n
+include "/CMC/kits/cadence/GPDK045/gpdk045_v_6_0/models/spectre/gpdk045.scs" section=tt
+vgn (gn 0) vsource dc=0.7
+vdn (dn 0) vsource dc=0.5
+mn (dn gn 0 0) g45n1svt w=wv l=lv
+vgp (gp 0) vsource dc=-0.7
+vdp (dp 0) vsource dc=-0.5
+mp (dp gp 0 0) g45p1svt w=wv l=lv
+simOpts options temp=27 tnom=27 save=selected
+save mn:ids mp:ids
+wsw sweep param=wv values=[0.25u 0.29u 0.3u 0.31u 0.45u 0.49u 0.5u 0.51u 0.6u 0.9u 0.99u 1u 1.01u 1.5u 1.99u 2u 2.01u 3u] {
+  opw dc
+}
+lsw2 alter param=wv value=1.5u
+lsw sweep param=lv values=[45n 55n 59n 60n 61n 80n 99n 100n 101n 200n 490n 500n 510n] {
+  opl dc
+}

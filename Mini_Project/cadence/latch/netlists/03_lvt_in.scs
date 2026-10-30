@@ -1,0 +1,85 @@
+// Generated for: spectre
+// Generated on: Oct 29 11:54:46 2026
+// Design library name: SAL45
+// Design cell name: STRONGARM_TB
+// Design view name: schematic
+simulator lang=spectre
+global 0
+parameters tper=2e-09 tpw=1.2e-09 trf=2e-11 tdel=2e-10 cl=5e-15 dvin=0.001 \
+    vcm=0.5 vdd=1.0
+include "/CMC/kits/cadence/GPDK045/gpdk045_v_6_0/models/spectre/gpdk045.scs" section=tt
+
+// Library name: SAL45
+// Cell name: INV45
+// View name: schematic
+subckt INV45 IN OUT VDD VSS
+    MP (OUT IN VDD VDD) g45p1svt w=(700n) l=45n nf=1 as=98f ad=98f \
+        ps=1.68u pd=1.68u nrd=200m nrs=200m sa=140n sb=140n sd=160n \
+        sca=84.67598 scb=0.07310 scc=0.01003 m=(1)
+    MN (OUT IN VSS VSS) g45n1svt w=(500n) l=45n nf=1 as=70f ad=70f \
+        ps=1.28u pd=1.28u nrd=280m nrs=280m sa=140n sb=140n sd=160n \
+        sca=100.34014 scb=0.08228 scc=0.01192 m=(1)
+ends INV45
+// End of subcircuit definition.
+
+// Library name: SAL45
+// Cell name: STRONGARM
+// View name: schematic
+subckt STRONGARM CLK INN INP OUTN OUTP VDD VSS
+    M4 (Y X Q VSS) g45n1svt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M3 (X Y P VSS) g45n1svt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M0 (TAIL CLK VSS VSS) g45n1svt w=(4u) l=45n nf=2 as=560f ad=320f \
+        ps=8.56u pd=4.32u nrd=20m nrs=35m sa=140n sb=140n sd=160n \
+        sca=56.99756 scb=0.05691 scc=0.00695 m=(1)
+    M2 (Q INN TAIL VSS) g45n1lvt w=(4u) l=45n nf=2 as=560f ad=320f \
+        ps=8.56u pd=4.32u nrd=20m nrs=35m sa=140n sb=140n sd=160n \
+        sca=56.99756 scb=0.05691 scc=0.00695 m=(1)
+    M1 (P INP TAIL VSS) g45n1lvt w=(4u) l=45n nf=2 as=560f ad=320f \
+        ps=8.56u pd=4.32u nrd=20m nrs=35m sa=140n sb=140n sd=160n \
+        sca=56.99756 scb=0.05691 scc=0.00695 m=(1)
+    S4 (Q CLK VDD VDD) g45p1svt w=(500n) l=45n nf=1 as=70f ad=70f ps=1.28u \
+        pd=1.28u nrd=280m nrs=280m sa=140n sb=140n sd=160n sca=100.34014 \
+        scb=0.08228 scc=0.01192 m=(1)
+    S3 (P CLK VDD VDD) g45p1svt w=(500n) l=45n nf=1 as=70f ad=70f ps=1.28u \
+        pd=1.28u nrd=280m nrs=280m sa=140n sb=140n sd=160n sca=100.34014 \
+        scb=0.08228 scc=0.01192 m=(1)
+    S2 (Y CLK VDD VDD) g45p1svt w=(500n) l=45n nf=1 as=70f ad=70f ps=1.28u \
+        pd=1.28u nrd=280m nrs=280m sa=140n sb=140n sd=160n sca=100.34014 \
+        scb=0.08228 scc=0.01192 m=(1)
+    S1 (X CLK VDD VDD) g45p1svt w=(500n) l=45n nf=1 as=70f ad=70f ps=1.28u \
+        pd=1.28u nrd=280m nrs=280m sa=140n sb=140n sd=160n sca=100.34014 \
+        scb=0.08228 scc=0.01192 m=(1)
+    M6 (Y X VDD VDD) g45p1svt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M5 (X Y VDD VDD) g45p1svt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    I_INVN (Y OUTN VDD VSS) INV45
+    I_INVP (X OUTP VDD VSS) INV45
+ends STRONGARM
+// End of subcircuit definition.
+
+// Library name: SAL45
+// Cell name: STRONGARM_TB
+// View name: schematic
+I_SA (clk inn inp outn outp vdd 0) STRONGARM
+VINN (inn 0) vsource dc=vcm-dvin/2 type=dc
+VINP (inp 0) vsource dc=vcm+dvin/2 type=dc
+V0 (vdd 0) vsource dc=vdd type=dc
+VCLK (clk 0) vsource type=pulse val0=0 val1=vdd period=tper delay=tdel \
+        rise=trf fall=trf width=tpw
+CLN (outn 0) capacitor c=cl
+CLP (outp 0) capacitor c=cl
+// ---- experiment 03_lvt_in
+simOpts options reltol=1e-6 vabstol=1e-12 iabstol=1e-15 temp=27 tnom=27 save=selected
+save outp outn clk V0:p
+vcm_sw sweep param=vcm values=[0.5] {
+dv_sw sweep param=dvin values=[0.001 1e-05] {
+  tr tran stop=2n maxstep=1p errpreset=conservative
+}
+}

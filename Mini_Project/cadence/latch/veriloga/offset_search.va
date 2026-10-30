@@ -1,0 +1,31 @@
+// Binary-search threshold finder for a clocked comparator (SAR-style).
+// At each falling clock edge (end of evaluation) it reads the decision and moves the differential
+// input toward the decision threshold: OUTP high -> dv -= step, else dv += step; step halves each cycle.
+// After n decisions dv sits within step0/2^(n-1) of the input that balances the comparator (= -offset).
+`include "constants.vams"
+`include "disciplines.vams"
+
+module offset_search(clk, outp, outn, dv);
+  input clk, outp, outn;
+  output dv;
+  electrical clk, outp, outn, dv;
+  parameter real vth = 0.5;    // clock / output threshold
+  parameter real step0 = 16m;  // first step; search range +-2*step0
+  parameter real ttr = 20p;    // input transition time (during reset)
+  real v, step;
+
+  analog begin
+    @(initial_step) begin
+      v = 0;
+      step = step0;
+    end
+    @(cross(V(clk) - vth, -1)) begin
+      if (V(outp) > V(outn))
+        v = v - step;
+      else
+        v = v + step;
+      step = step / 2;
+    end
+    V(dv) <+ transition(v, 0, ttr);
+  end
+endmodule

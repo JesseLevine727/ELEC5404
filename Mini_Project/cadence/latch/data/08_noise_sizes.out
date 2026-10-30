@@ -1,0 +1,10 @@
+spectre 08_noise_sizes: exit 0
+spectre completes with 0 errors, 18 warnings, and 181 notices.
+     18 WARNING (SPECTRE-16780)
+cand          win tail  fmax | t_d 1mV   tau  E fJ |   P(+) at 0.3/0.6/0.9 mV | sigma_n
+base          12u   8u  100G |   102.1  9.44  30.5 |   0.723   0.860   0.953 | 0.539 mV
+base_200G     12u   8u  200G |   102.1  9.44  30.5 |   0.707   0.840   0.930 | 0.600 mV
+win16         16u   8u  100G |    99.9  9.19  34.0 |   0.703   0.847   0.937 | 0.585 mV
+win24         24u   8u  100G |   102.3  8.94  41.4 |   0.717   0.863   0.947 | 0.549 mV
+tail4         12u   4u  100G |   113.1  9.66  29.4 |   0.687   0.833   0.947 | 0.588 mV
+win24_tail4   24u   4u  100G |   116.8  9.18  40.2 |   0.697   0.863   0.943 | 0.562 mV

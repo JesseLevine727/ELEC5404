@@ -1,0 +1,4 @@
+# Spectre/Virtuoso outputs (regenerate on the server)
+*/raw/
+*/logs/
+__pycache__/

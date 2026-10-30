@@ -1,0 +1,86 @@
+// Generated for: spectre
+// Generated on: Oct 29 12:10:05 2026
+// Design library name: SAL45
+// Design cell name: STRONGARM_TB
+// Design view name: schematic
+simulator lang=spectre
+global 0
+parameters tper=2e-09 tpw=1.2e-09 trf=2e-11 tdel=2e-10 cl=5e-15 dvin=0.001 \
+    vcm=0.5 vdd=1.0
+include "/CMC/kits/cadence/GPDK045/gpdk045_v_6_0/models/spectre/gpdk045.scs" section=mc
+
+// Library name: SAL45
+// Cell name: INV45
+// View name: schematic
+subckt INV45 IN OUT VDD VSS
+    MP (OUT IN VDD VDD) g45p1lvt w=(700n) l=45n nf=1 as=98f ad=98f \
+        ps=1.68u pd=1.68u nrd=200m nrs=200m sa=140n sb=140n sd=160n \
+        sca=84.67598 scb=0.07310 scc=0.01003 m=(1)
+    MN (OUT IN VSS VSS) g45n1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
+        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
+        scb=0.10360 scc=0.01825 m=(1)
+ends INV45
+// End of subcircuit definition.
+
+// Library name: SAL45
+// Cell name: STRONGARM
+// View name: schematic
+subckt STRONGARM CLK INN INP OUTN OUTP VDD VSS
+    M4 (Y X Q VSS) g45n1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M3 (X Y P VSS) g45n1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M0 (TAIL CLK VSS VSS) g45n1lvt w=(8u) l=45n nf=4 as=880f ad=640f \
+        ps=12.88u pd=8.64u nrd=10m nrs=13.75m sa=140n sb=140n sd=160n \
+        sca=56.99756 scb=0.05691 scc=0.00695 m=(1)
+    M2 (Q INN TAIL VSS) g45n1lvt w=(12u) l=45n nf=4 as=1.32p ad=960f \
+        ps=18.88u pd=12.64u nrd=6.66667m nrs=9.16667m sa=140n sb=140n \
+        sd=160n sca=51.70957 scb=0.05398 scc=0.00640 m=(1)
+    M1 (P INP TAIL VSS) g45n1lvt w=(12u) l=45n nf=4 as=1.32p ad=960f \
+        ps=18.88u pd=12.64u nrd=6.66667m nrs=9.16667m sa=140n sb=140n \
+        sd=160n sca=51.70957 scb=0.05398 scc=0.00640 m=(1)
+    S4 (Q CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
+        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
+        scb=0.10360 scc=0.01825 m=(1)
+    S3 (P CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
+        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
+        scb=0.10360 scc=0.01825 m=(1)
+    S2 (Y CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
+        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
+        scb=0.10360 scc=0.01825 m=(1)
+    S1 (X CLK VDD VDD) g45p1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
+        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
+        scb=0.10360 scc=0.01825 m=(1)
+    M6 (Y X VDD VDD) g45p1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M5 (X Y VDD VDD) g45p1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    I_INVN (Y OUTN VDD VSS) INV45
+    I_INVP (X OUTP VDD VSS) INV45
+ends STRONGARM
+// End of subcircuit definition.
+
+// Library name: SAL45
+// Cell name: STRONGARM_TB
+// View name: schematic
+I_SA (clk inn inp outn outp vdd 0) STRONGARM
+V0 (vdd 0) vsource dc=vdd type=dc
+VCLK (clk 0) vsource type=pulse val0=0 val1=vdd period=tper delay=tdel \
+        rise=trf fall=trf width=tpw
+CLN (outn 0) capacitor c=cl
+CLP (outp 0) capacitor c=cl
+ahdl_include "/home/jesselevine/Desktop/StrongArm45/latch/veriloga/offset_search.va"
+VCMS (cm 0) vsource dc=vcm
+EP (inp cm dvn 0) vcvs gain=0.5
+EN (inn cm dvn 0) vcvs gain=-0.5
+// ---- experiment v02_offset_mc200
+OS (clk outp outn dvn) offset_search step0=16m
+simOpts options reltol=1e-5 vabstol=1e-9 iabstol=1e-12 temp=27 tnom=27 save=selected
+save dvn outp outn clk
+mc montecarlo numruns=200 seed=5404 variations=mismatch donominal=no savefamilyplots=yes {
+  tr tran stop=2.64e-08 maxstep=2p errpreset=moderate
+}
