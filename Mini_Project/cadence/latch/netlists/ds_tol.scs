@@ -1,0 +1,138 @@
+// Generated for: spectre
+// Generated on: Oct 30 10:02:57 2026
+// Design library name: SAL45
+// Design cell name: STRONGARM_TB
+// Design view name: schematic
+simulator lang=spectre
+global 0
+parameters tper=2e-09 tpw=1.2e-09 trf=2e-11 tdel=2e-10 cl=5e-15 dvin=0.001 \
+    vcm=0.5 vdd=1.0
+include "/CMC/kits/cadence/GPDK045/gpdk045_v_6_0/models/spectre/gpdk045.scs" section=tt
+
+// Library name: SAL45
+// Cell name: INV45
+// View name: schematic
+subckt INV45 IN OUT VDD VSS
+    MP (OUT IN VDD VDD) g45p1lvt w=(700n) l=45n nf=1 as=98f ad=98f \
+        ps=1.68u pd=1.68u nrd=200m nrs=200m sa=140n sb=140n sd=160n \
+        sca=84.67598 scb=0.07310 scc=0.01003 m=(1)
+    MN (OUT IN VSS VSS) g45n1lvt w=(250n) l=45n nf=1 as=35f ad=35f ps=780n \
+        pd=780n nrd=560m nrs=560m sa=140n sb=140n sd=160n sca=148.34321 \
+        scb=0.10360 scc=0.01825 m=(1)
+ends INV45
+// End of subcircuit definition.
+
+// Library name: SAL45
+// Cell name: STRONGARM
+// View name: schematic
+subckt STRONGARM CLK INN INP OUTN OUTP VDD VSS
+    M4 (Y X Q VSS) g45n1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M3 (X Y P VSS) g45n1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M0 (TAIL CLK VSS VSS) g45n1lvt w=(8u) l=45n nf=4 as=880f ad=640f \
+        ps=12.88u pd=8.64u nrd=10m nrs=13.75m sa=140n sb=140n sd=160n \
+        sca=56.99756 scb=0.05691 scc=0.00695 m=(1)
+    M2 (Q INN TAIL VSS) g45n1lvt w=(12u) l=45n nf=4 as=1.32p ad=960f \
+        ps=18.88u pd=12.64u nrd=6.66667m nrs=9.16667m sa=140n sb=140n \
+        sd=160n sca=51.70957 scb=0.05398 scc=0.00640 m=(1)
+    M1 (P INP TAIL VSS) g45n1lvt w=(12u) l=45n nf=4 as=1.32p ad=960f \
+        ps=18.88u pd=12.64u nrd=6.66667m nrs=9.16667m sa=140n sb=140n \
+        sd=160n sca=51.70957 scb=0.05398 scc=0.00640 m=(1)
+    S4 (Q CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    S3 (P CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    S2 (Y CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    S1 (X CLK VDD VDD) g45p1lvt w=(1u) l=45n nf=1 as=140f ad=140f ps=2.28u \
+        pd=2.28u nrd=140m nrs=140m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M6 (Y X VDD VDD) g45p1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    M5 (X Y VDD VDD) g45p1lvt w=(2u) l=45n nf=2 as=280f ad=160f ps=4.56u \
+        pd=2.32u nrd=40m nrs=70m sa=140n sb=140n sd=160n sca=72.26287 \
+        scb=0.06569 scc=0.00861 m=(1)
+    I_INVN (Y OUTN VDD VSS) INV45
+    I_INVP (X OUTP VDD VSS) INV45
+ends STRONGARM
+// End of subcircuit definition.
+
+// Library name: SAL45
+// Cell name: STRONGARM_TB
+// View name: schematic
+I_SA (clk inn inp outn outp vdd 0) STRONGARM
+VINN (inn 0) vsource dc=vcm-dvin/2 type=dc
+VINP (inp 0) vsource dc=vcm+dvin/2 type=dc
+V0 (vsup 0) vsource dc=vdd type=dc
+VCLK (clk 0) vsource type=pulse val0=0 val1=vdd period=tper delay=tdel \
+        rise=trf fall=trf width=tpw
+CLN (outn 0) capacitor c=cl
+CLP (outp 0) capacitor c=cl
+parameters pid=0
+ahdl_include "/home/jesselevine/Desktop/StrongArm45/latch/veriloga/sa_meter.va"
+// ---- experiment ds_tol
+MTR (clk outp outn vsup vdd) sa_meter vdd=vdd pid=pid dvin=dvin vcm=vcm file="raw/ds_tol/meter.txt"
+simOpts options reltol=5e-7 vabstol=5e-13 iabstol=5e-14 temp=27 tnom=27 save=none
+pts paramset {
+pid dvin vcm vdd temp
+0 0.007280185271 0.5986033188 1.09682383 17.8761068
+1 0.002741964956 0.5510867254 1.076508964 43.28997619
+2 0.005015171938 0.4937338747 1.033349 64.87920651
+3 0.006586631356 0.4649945352 1.099991617 26.10124377
+4 0.09648485949 0.590702365 1.0790416 65.43423585
+5 0.01209763717 0.5542955565 0.9878740435 33.53620935
+6 0.0004606193733 0.4828930727 0.9551487606 40.5827848
+7 0.1712591142 0.5879191693 0.9639344465 13.22092808
+8 0.0001999289083 0.5892638967 0.9592069734 80.58576501
+9 0.06793938985 0.4657461274 0.9894910787 49.96957743
+10 0.0002808349784 0.590104501 1.013716816 35.40513294
+11 0.009503518897 0.5921057522 1.042101117 62.76761681
+12 0.1099967013 0.4403680636 1.060856571 52.51452198
+13 0.002277459097 0.4468435813 1.02196905 32.0110171
+14 0.268336884 0.4220555563 1.01309845 18.84897023
+15 0.003643755084 0.5308482446 0.9479398748 31.9126109
+16 0.007576445641 0.5361720021 1.032700065 13.7482476
+17 0.2262527108 0.4453252127 1.037805427 47.18321771
+18 0.006610071765 0.4013570933 0.9295925761 17.84035469
+19 0.008087099359 0.5071013044 1.035735288 45.67204824
+20 0.006473367572 0.4788760988 0.9311969016 12.89792395
+21 0.009686088386 0.5277153789 0.9164258818 77.88540639
+22 0.003177271005 0.4379093229 0.9614303264 68.70474196
+23 0.0006376962174 0.4130754741 0.9337456748 30.46839695
+24 0.05144648116 0.4136503707 0.988745909 63.26866093
+25 1.001476022e-06 0.5748762147 1.043421776 18.71895987
+26 1.003594356e-06 0.5896135721 1.055374479 8.985593863
+27 1.006885686e-06 0.594692055 0.9596802446 26.68881017
+28 1.006952361e-06 0.4843512269 0.9856530478 45.99361117
+29 1.010534211e-06 0.4525419832 1.086155149 4.21101806
+30 1.011427056e-06 0.4478011422 0.990555545 54.22440403
+31 1.014347779e-06 0.489455175 1.035552571 53.40762393
+32 1.018398927e-06 0.5578662359 0.9150365541 3.361263963
+33 1.028905486e-06 0.4907532318 1.056532639 28.1111115
+34 1.035830058e-06 0.4855746988 0.9581312752 45.23225125
+35 1.049577302e-06 0.5381824316 1.076130845 19.66969755
+36 1.050373012e-06 0.5688798546 0.9613606716 63.50836963
+37 1.063978889e-06 0.5772787945 1.033145143 39.58213814
+38 1.069889971e-06 0.4635925517 1.03488626 39.42849518
+39 1.090431188e-06 0.5827085962 0.9921699434 41.94106125
+40 1.091829965e-06 0.5404384557 1.016208337 6.907634274
+41 1.092946317e-06 0.4981202795 0.9160174411 11.17942376
+42 1.094462377e-06 0.5055499866 0.9410464985 63.00688947
+43 1.095296165e-06 0.4112686517 1.089104213 66.48276545
+44 1.095311463e-06 0.4136249381 0.9634410171 61.80028043
+45 1.101561074e-06 0.5602106645 0.9749787934 51.81522108
+46 1.104101649e-06 0.5326711748 0.9653543267 11.55479172
+47 1.117413662e-06 0.4917054286 1.061335496 58.14728556
+48 1.119074828e-06 0.4197997198 0.9504552566 8.194676978
+49 1.125272779e-06 0.4268722469 0.9589237799 62.99677071
+}
+sw sweep paramset=pts {
+  tr tran stop=2n maxstep=0.5p errpreset=conservative outputstart=1.99n
+}

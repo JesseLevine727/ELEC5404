@@ -2,7 +2,7 @@
 
 This is the comparator for the ELEC 5404 mini-project (MLP vs KBNN models of decision delay and energy). The design targets come from a 10-bit, 100 MS/s SAR ADC with VCM-based switching; see `../../PROJECT_PLAN.md`, section 2.
 
-The latch is a standard StrongARM:
+The latch is the modified StrongARM of Razavi ("The StrongARM Latch", IEEE SSC Magazine, Spring 2015, Fig. 1(b)), with all four internal nodes precharged:
 - input pair M1/M2
 - clocked tail M0
 - NMOS latch M3/M4 on the integration nodes P/Q
@@ -198,7 +198,10 @@ At ΔVin = 1 mV the residuals are 0.2–5 µV.
 - **Monte Carlo mismatch:** GPDK045 mismatch is per instance through `rn1_*`/`rn2_*` in `stat_mis_*`. It is active with `section=mc` and `montecarlo variations=mismatch`.
 - **Output size:** transient-noise and Monte Carlo runs at full time resolution are large (2.2 GB for `08`). Future long runs should save only strobe points. `cf.sh spectre` now pulls only the run it just did.
 
+## Dataset
+
+Generated 2026-10-30 (`scripts/gen_dataset.py`, meter `veriloga/sa_meter.va`): 4906 one-comparison transients in `data/dataset/`. Sets, columns and checks are in `data/dataset/README.md`.
+
 ## Still to do
 
 - TikZ figure of the schematic for the report.
-- The data-generation pipeline: static dataset plus the extrapolation set (`PROJECT_PLAN.md`, section 4).

@@ -1,0 +1,50 @@
+// Measures one comparison per transient, so dataset runs need not save waveforms (gen_dataset.py).
+// Sits in series with the supply (sup_in -> sup_out, a zero-volt branch) and watches the clock and outputs.
+// At the end of each transient it appends one line to `file`:
+//   pid dvin vcm vdd temp_C  tclk tp tn tfall  energy  pkp pkn
+// tclk/tfall: clock crossing vdd/2 rising/falling; tp/tn: first rising crossing of outp/outn through vdd/2
+// after tclk (-1 if none); all interpolated (last_crossing) at time points the cross events place within
+// 10 fs of the crossing. energy = vdd x supply charge over the whole transient. pkp/pkn: peak of each
+// output while the clock is high (the losing output's peak flags double decisions).
+`include "constants.vams"
+`include "disciplines.vams"
+
+module sa_meter(clk, outp, outn, sup_in, sup_out);
+  input clk, outp, outn;
+  inout sup_in, sup_out;
+  electrical clk, outp, outn, sup_in, sup_out;
+  parameter real vdd = 1.0;
+  parameter real pid = 0;   // the next three are only echoed to the file
+  parameter real dvin = 0;
+  parameter real vcm = 0;
+  parameter string file = "sa_meter.txt";
+  real q, lc_clk, lc_fall, lc_p, lc_n, tclk, tfall, tp, tn, pkp, pkn;
+  integer fd;
+
+  analog begin
+    V(sup_in, sup_out) <+ 0;
+    q = idt(I(sup_in, sup_out), 0);
+    // analog operators may not sit inside the event blocks, so they run on every step
+    lc_clk = last_crossing(V(clk) - vdd/2, +1);
+    lc_fall = last_crossing(V(clk) - vdd/2, -1);
+    lc_p = last_crossing(V(outp) - vdd/2, +1);
+    lc_n = last_crossing(V(outn) - vdd/2, +1);
+    @(initial_step("tran")) begin
+      tclk = -1; tfall = -1; tp = -1; tn = -1; pkp = 0; pkn = 0;
+    end
+    @(cross(V(clk) - vdd/2, +1, 10f)) if (tclk < 0) tclk = lc_clk;
+    @(cross(V(clk) - vdd/2, -1, 10f)) if (tclk > 0 && tfall < 0) tfall = lc_fall;
+    @(cross(V(outp) - vdd/2, +1, 10f)) if (tclk > 0 && tp < 0) tp = lc_p;
+    @(cross(V(outn) - vdd/2, +1, 10f)) if (tclk > 0 && tn < 0) tn = lc_n;
+    if (tclk > 0 && tfall < 0) begin
+      if (V(outp) > pkp) pkp = V(outp);
+      if (V(outn) > pkn) pkn = V(outn);
+    end
+    @(final_step("tran")) begin
+      fd = $fopen(file, "a");
+      $fstrobe(fd, "%.0f %.12e %.12e %.12e %.12e %.12e %.12e %.12e %.12e %.12e %.12e %.12e",
+               pid, dvin, vcm, vdd, $temperature - `P_CELSIUS0, tclk, tp, tn, tfall, vdd * q, pkp, pkn);
+      $fclose(fd);
+    end
+  end
+endmodule

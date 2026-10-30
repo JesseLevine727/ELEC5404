@@ -38,7 +38,7 @@ Low-threshold devices throughout gave τ ≈ 14 ps at first-cut sizes. Changed t
 
 | Comparator spec | Target | Reason |
 |---|---|---|
-| Decision time at ΔV_in ≈ ½ LSB (1 mV) | ≤ 100 ps | per-bit cycle ≈ 800 ps; the comparator gets about 300 ps, the rest goes to logic and DAC settling |
+| Decision time at ΔV_in ≈ ½ LSB (1 mV) | ≤ 100 ps (106 ps accepted, 2026-10-30) | per-bit cycle ≈ 800 ps; the comparator gets about 300 ps, the rest goes to logic and DAC settling |
 | Regeneration time constant τ | ≤ ~15 ps | near metastability the latch sits at VDD/2; SVT is too close to threshold there (≈ 33–46 ps measured), LVT reaches ≈ 14 ps |
 | Metastability rate at 100 MS/s | < 10⁻⁶ per conversion | follows from a ~300 ps budget and τ ≈ 15 ps (metastable below about 0.4 nV) |
 | Input-referred noise | ≤ 0.65 mV rms (≈ LSB/3) | relaxed from 0.5 mV on 2026-10-30. Next to quantization noise it costs about 0.55 bit of ENOB (0.5 mV would cost 0.42). Reaching 0.5 mV would need extra X/Y capacitance, which slows exactly the delay and τ the models predict. |
@@ -48,7 +48,7 @@ Low-threshold devices throughout gave τ ≈ 14 ps at first-cut sizes. Changed t
 | Clock | 20 ps edges, reset while the clock is low | |
 
 **Verified (final design, 2026-10-30, nominal 27 °C, 1.0 V, VCM 0.5 V):**
-- t_d(1 mV) = 106 ps, 6 % over the ≤ 100 ps target. That target stood in for metastability, which is met with a wide margin: slack (300 ps − t_d)/τ = 19.5 → about 3×10⁻⁹ per conversion.
+- t_d(1 mV) = 106 ps, 6 % over the ≤ 100 ps target. That target stood in for metastability, which is met with a wide margin: slack (300 ps − t_d)/τ = 19.5 → about 3×10⁻⁹ per conversion. Accepted on 2026-10-30; the design is frozen.
 - τ = 10.0 ps, constant from 1 mV down to 1 nV
 - E = 32 fJ
 - offset σ = 2.23 mV (200-sample Monte Carlo)
@@ -57,7 +57,7 @@ Low-threshold devices throughout gave τ ≈ 14 ps at first-cut sizes. Changed t
 - **No decision memory** down to 1 µV with a 160 ps reset. This needed 1 µm reset switches (250 nm remembered decisions up to about 3 mV).
 
 Noise meets the relaxed 0.65 mV spec. It missed the original 0.5 mV target, and widening the input pair or shrinking the tail did not change it.
-Across the dataset range τ varies from 5.9 ps (1.1 V) to about 18.6 ps (0.9 V, 85 °C).
+Across the dataset range τ varies from 5.3 ps (VCM 0.6 V, 1.1 V, 0 °C) to 21.6 ps (VCM 0.4 V, 0.9 V, 85 °C); at VCM 0.5 V, from 5.9 to 18.6 ps.
 
 The 100 MS/s choice comes from the metastability "cliff". Assuming 80 ps delay at 1 mV and τ = 15 ps, the rate is about 4×10⁻⁷ per conversion at 100 MS/s but about 10⁻² at 200 MS/s. The application (section 7) sweeps fs from 50 to 400 MS/s across that cliff.
 
@@ -65,7 +65,9 @@ The 100 MS/s choice comes from the metastability "cliff". Assuming 80 ps delay a
 
 ## 3. Circuit (Cadence Virtuoso / Spectre, GPDK045)
 
-- **Topology:** standard StrongARM.
+- **Topology:** the modified StrongARM of Razavi, "The StrongARM Latch", IEEE SSC Magazine, Spring 2015, Fig. 1(b).
+  - It precharges all four nodes (P, Q, X, Y); the original StrongARM (Fig. 1(a)) resets only X/Y, which costs gain and dynamic offset.
+  - Razavi's lower-kickback alternative (Fig. 8(a), input pair clocked through the drain path instead of a tail) trades kickback for offset. It was not needed: the kickback here is small (section 2).
   - Clocked tail, input pair, cross-coupled NMOS and PMOS pairs.
   - Four reset PMOS switches, on the integration nodes and the outputs.
   - Output inverters driving a representative SAR-logic load.
@@ -103,13 +105,18 @@ The nominal (no-mismatch) latch is symmetric, so the model uses |ΔV_in|. Both s
 
 ### Datasets
 
-| Set | ΔV_in range | Size (approx.) | Use |
-|---|---|---|---|
-| Training / validation / test | 100 µV – 300 mV | ~4000 (70 / 15 / 15 %) | training, early stopping, interpolation test |
-| Extrapolation | 1 µV – 100 µV | ~500 | never trained on; tests the metastable region |
-| Spot checks | specific points | ~20–50 | application validation |
+Generated 2026-10-30 by `cadence/latch/scripts/gen_dataset.py`; files and column definitions in `cadence/latch/data/dataset/` (README there).
+Each sample is one Spectre transient of one comparison from reset, at the verification tolerances. A Verilog-A meter in series with the supply measures t_d and E inside the simulation (matches the waveform measurement to < 1 fs and 1 aJ).
 
----
+| Set | ΔV_in range | Size | Sampling | Use |
+|---|---|---|---|---|
+| train | 100 µV – 300 mV | 2800 | scrambled Sobol, in order: any first N points are evenly spread | training; data-efficiency study takes the first N |
+| val | 100 µV – 300 mV | 600 | independent uniform random | early stopping |
+| test | 100 µV – 300 mV | 600 | independent uniform random | interpolation accuracy |
+| extrap | 1 µV – 100 µV | 500 | uniform random | never trained on; tests the metastable region |
+| slices | 1 µV – 300 mV, 6 per decade | 306 | 9 fixed (VCM, VDD, T): nominal, each input at both ends, worst and best corners | t_d vs ΔV_in curves; τ and t₀ fitted directly to Spectre |
+| sym, tol | – | 50 + 50 | subsets of test/extrap | checks: −ΔV_in symmetry; half tolerances |
+| Spot checks | specific points | ~20–50 | chosen later | application validation (section 7) |
 
 ## 5. Models
 
