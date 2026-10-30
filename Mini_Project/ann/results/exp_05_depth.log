@@ -1,0 +1,28 @@
+
+== mlp_relu: 41 s for the two-layer networks, 60000 epochs. Validation RMS error, mean over seeds:
+  2 hidden layers x   20 (  562 weights): 0.451 % (seeds 0.332-0.509)
+  1 hidden layer  x   80 (  562 weights): 0.332 % (seeds 0.292-0.378)
+  1 hidden layer  x  160 ( 1122 weights): 0.258 % (seeds 0.216-0.287)
+  2 hidden layers x   40 ( 1922 weights): 0.419 % (seeds 0.380-0.492)
+  1 hidden layer  x  320 ( 2242 weights): 0.192 % (seeds 0.161-0.245)
+  1 hidden layer  x  640 ( 4482 weights): 0.150 % (seeds 0.144-0.157)   <- chosen
+  2 hidden layers x   80 ( 7042 weights): 0.421 % (seeds 0.373-0.551)
+
+== mlp_tanh: 41 s for the two-layer networks, 60000 epochs. Validation RMS error, mean over seeds:
+  2 hidden layers x   20 (  562 weights): 0.096 % (seeds 0.079-0.106)
+  1 hidden layer  x   80 (  562 weights): 0.217 % (seeds 0.186-0.248)
+  1 hidden layer  x  160 ( 1122 weights): 0.217 % (seeds 0.204-0.238)
+  2 hidden layers x   40 ( 1922 weights): 0.063 % (seeds 0.057-0.067)
+  1 hidden layer  x  320 ( 2242 weights): 0.199 % (seeds 0.189-0.210)
+  2 hidden layers x   80 ( 7042 weights): 0.051 % (seeds 0.048-0.054)   <- chosen
+
+== kbnn_lin: 84 s for the two-layer networks, 60000 epochs. Validation RMS error, mean over seeds:
+  2 hidden layers x   10 (  376 weights): 0.486 % (seeds 0.411-0.618)
+  1 hidden layer  x   40 (  606 weights): 0.412 % (seeds 0.337-0.459)
+  2 hidden layers x   20 ( 1146 weights): 0.468 % (seeds 0.396-0.530)
+  1 hidden layer  x   80 ( 1206 weights): 0.359 % (seeds 0.286-0.398)
+  1 hidden layer  x  160 ( 2406 weights): 0.331 % (seeds 0.279-0.364)
+  2 hidden layers x   40 ( 3886 weights): 0.555 % (seeds 0.487-0.653)
+  1 hidden layer  x  320 ( 4806 weights): 0.276 % (seeds 0.238-0.317)   <- chosen
+
+FROZEN final models (results/final.pt): mlp_relu 1 hidden layer(s) x 640, mlp_tanh 2 hidden layer(s) x 80, kbnn_lin 1 hidden layer(s) x 320

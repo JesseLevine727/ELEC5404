@@ -1,0 +1,4 @@
+family,params,single_train_s,single_epochs_to_1pct,single_reached_1pct,single_epochs_to_0.5pct,single_reached_0.5pct,single_best_val_rms,batch5_train_s,batch5_epochs_to_1pct,batch5_reached_1pct,batch5_epochs_to_0.5pct,batch5_reached_0.5pct,batch5_best_val_rms,cpu_single_s,cpu_batch_s_per_point,gpu_batch_s_per_point
+mlp_relu,352,18.7108,1520,1,8160,1,0.370127,18.67,1960,5,11000,5,0.412609,9.08738e-06,6.62591e-08,1.29804e-09
+mlp_tanh,86,19.165,3480,1,13000,1,0.375561,19.8497,3360,5,17500,3,0.457613,9.08691e-06,6.7611e-09,5.305e-10
+kbnn_lin,381,44.8064,1100,1,8180,1,0.441866,46.4022,1100,5,7700,3,0.480724,4.49847e-05,5.07963e-08,2.33398e-09

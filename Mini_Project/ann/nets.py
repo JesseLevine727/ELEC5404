@@ -34,18 +34,29 @@ def load(name, n=None):
     zs = (vcm, vdd, temp) scaled, L = ln(V_REF / |dvin|), v = |dvin| / DV_HI, y = (t_d, E) in model units."""
     a = np.loadtxt(os.path.join(DSET, f"{name}.csv"), delimiter=",", skiprows=1, ndmin=2)[:n]
     assert (a[:, 8] == 1).all(), f"{name}: rows that failed the Cadence checks"
-    dv, z = np.abs(a[:, 0]), a[:, 1:4]
+    y = torch.tensor(np.column_stack([a[:, 4] / T_UNIT, a[:, 5] / E_UNIT]), dtype=torch.float32, device=DEV)
+    return features(a[:, 0], a[:, 1:4]) | dict(name=name, raw=a, y=y)
+
+
+def features(dvin, z):
+    """Model inputs (x, zs, L, v as in load) for any dvin (N,) in V and z = (vcm, vdd, temp) (N, 3)."""
+    dv, z = np.abs(np.asarray(dvin, float)), np.asarray(z, float)
     u = 2 * (np.log10(dv) - math.log10(DV_LO)) / (math.log10(DV_HI) - math.log10(DV_LO)) - 1
     zs = 2 * (z - Z_LO) / (Z_HI - Z_LO) - 1
     t = lambda c: torch.tensor(c, dtype=torch.float32, device=DEV)
-    return dict(name=name, raw=a, x=t(np.column_stack([u, zs])), zs=t(zs), L=t(np.log(V_REF / dv)),
-                v=t(dv / DV_HI), y=t(np.column_stack([a[:, 4] / T_UNIT, a[:, 5] / E_UNIT])))
+    return dict(x=t(np.column_stack([u, zs])), zs=t(zs), L=t(np.log(V_REF / dv)), v=t(dv / DV_HI))
 
 
 def concat(*splits):
     """Several splits as one (e.g. train + guard)."""
     return dict(name="+".join(d["name"] for d in splits), raw=np.vstack([d["raw"] for d in splits]),
                 **{k: torch.cat([d[k] for d in splits]) for k in ("x", "zs", "L", "v", "y")})
+
+
+def subset(d, keep, name):
+    """The rows of a split where keep (boolean array) is true."""
+    k = torch.tensor(keep, device=DEV)
+    return dict(name=name, raw=d["raw"][keep], **{c: d[c][k] for c in ("x", "zs", "L", "v", "y")})
 
 
 class BatchMLP(torch.nn.Module):
@@ -126,6 +137,20 @@ class KBNN(torch.nn.Module):
     def forward(self, d):
         k = self.parts(d)
         return torch.stack([k["t0"] + k["tau"] * d["L"] + k["g"], k["E0"] + k["s"] * d["L"] + k["q"]], -1)
+
+
+def pick(model, index):
+    """A new model holding only the networks at `index` of a batched model: weights copied, padding trimmed."""
+    c = dict(model.config)
+    for key in ("widths", "widths_p", "widths_c", "seeds"):
+        if key in c:
+            c[key] = [c[key][i] for i in index]
+    new = dict(MLP=MLP, KBNN=KBNN)[c.pop("cls")](**c).to(DEV)
+    k, src = torch.tensor(index, device=DEV), model.state_dict()
+    with torch.no_grad():
+        for n, t in new.state_dict().items():  # padded neurons are the trailing ones
+            t.copy_(src[n][k][(slice(None),) + tuple(slice(0, d) for d in t.shape[1:])])
+    return new
 
 
 def rel_mse(pred, y, w=None):

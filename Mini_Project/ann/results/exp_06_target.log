@@ -1,0 +1,36 @@
+
+== mlp_relu: 55 s for 50 networks, 60000 epochs. RMS % error, mean over seeds:
+  size  10 (  72 weights): train 1.569  val 1.701 (seeds 1.600-1.807)  val/train 1.08  underlearning
+  size  15 ( 107 weights): train 1.055  val 1.101 (seeds 1.006-1.266)  val/train 1.04  underlearning
+  size  20 ( 142 weights): train 0.827  val 0.883 (seeds 0.843-0.971)  val/train 1.07  underlearning
+  size  25 ( 177 weights): train 0.700  val 0.753 (seeds 0.641-0.888)  val/train 1.08  underlearning
+  size  30 ( 212 weights): train 0.608  val 0.662 (seeds 0.535-0.742)  val/train 1.09  underlearning
+  size  35 ( 247 weights): train 0.512  val 0.545 (seeds 0.527-0.576)  val/train 1.06  underlearning
+  size  40 ( 282 weights): train 0.499  val 0.525 (seeds 0.454-0.611)  val/train 1.05  overlearning
+  size  50 ( 352 weights): train 0.390  val 0.423 (seeds 0.373-0.507)  val/train 1.09  good learning   <- chosen
+  size  60 ( 422 weights): train 0.352  val 0.404 (seeds 0.359-0.449)  val/train 1.15  good learning
+  size  80 ( 562 weights): train 0.305  val 0.363 (seeds 0.325-0.411)  val/train 1.19  good learning
+
+== mlp_tanh: 26 s for 45 networks, 60000 epochs. RMS % error, mean over seeds:
+  size   5 (  37 weights): train 1.223  val 1.182 (seeds 1.139-1.211)  val/train 0.97  underlearning
+  size   8 (  58 weights): train 0.687  val 0.698 (seeds 0.637-0.789)  val/train 1.02  underlearning
+  size  10 (  72 weights): train 0.525  val 0.540 (seeds 0.501-0.568)  val/train 1.03  underlearning
+  size  12 (  86 weights): train 0.451  val 0.460 (seeds 0.433-0.487)  val/train 1.02  good learning   <- chosen
+  size  15 ( 107 weights): train 0.373  val 0.380 (seeds 0.362-0.413)  val/train 1.02  good learning
+  size  20 ( 142 weights): train 0.270  val 0.279 (seeds 0.221-0.327)  val/train 1.03  good learning
+  size  25 ( 177 weights): train 0.254  val 0.261 (seeds 0.229-0.310)  val/train 1.03  good learning
+  size  30 ( 212 weights): train 0.250  val 0.256 (seeds 0.215-0.287)  val/train 1.02  good learning
+  size  40 ( 282 weights): train 0.226  val 0.228 (seeds 0.199-0.265)  val/train 1.01  good learning
+
+== kbnn_lin: 81 s for 45 networks, 60000 epochs. RMS % error, mean over seeds:
+  size   5 (  81 weights): train 1.543  val 1.535 (seeds 1.352-1.830)  val/train 0.99  underlearning
+  size   8 ( 126 weights): train 0.991  val 1.019 (seeds 0.892-1.372)  val/train 1.03  underlearning
+  size  10 ( 156 weights): train 0.790  val 0.850 (seeds 0.712-0.983)  val/train 1.08  underlearning
+  size  12 ( 186 weights): train 0.658  val 0.681 (seeds 0.590-0.772)  val/train 1.03  underlearning
+  size  15 ( 231 weights): train 0.546  val 0.595 (seeds 0.464-0.715)  val/train 1.09  underlearning
+  size  20 ( 306 weights): train 0.487  val 0.541 (seeds 0.438-0.654)  val/train 1.11  overlearning
+  size  25 ( 381 weights): train 0.376  val 0.442 (seeds 0.379-0.482)  val/train 1.18  good learning   <- chosen
+  size  30 ( 456 weights): train 0.359  val 0.442 (seeds 0.397-0.490)  val/train 1.23  good learning
+  size  40 ( 606 weights): train 0.324  val 0.423 (seeds 0.373-0.498)  val/train 1.31  good learning
+
+FROZEN final models (results/final.pt): mlp_relu 1 hidden layer x 50, mlp_tanh 1 hidden layer x 12, kbnn_lin 1 hidden layer x 25

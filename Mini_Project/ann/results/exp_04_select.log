@@ -1,0 +1,19 @@
+
+== mlp_relu: 189 s for 20 networks, 60000 epochs
+  size   80 (  562 weights): val RMS 0.332 % (seeds 0.292-0.378), median best epoch 57480
+  size  160 ( 1122 weights): val RMS 0.258 % (seeds 0.216-0.287), median best epoch 47820
+  size  320 ( 2242 weights): val RMS 0.192 % (seeds 0.161-0.245), median best epoch 35100
+  size  640 ( 4482 weights): val RMS 0.150 % (seeds 0.144-0.157), median best epoch 27200   <- chosen
+
+== mlp_tanh: 66 s for 15 networks, 60000 epochs
+  size   80 (  562 weights): val RMS 0.217 % (seeds 0.186-0.248), median best epoch 59980
+  size  160 ( 1122 weights): val RMS 0.217 % (seeds 0.204-0.238), median best epoch 59960
+  size  320 ( 2242 weights): val RMS 0.199 % (seeds 0.189-0.210), median best epoch 59980   <- chosen
+
+== kbnn_lin: 278 s for 20 networks, 60000 epochs
+  size   40 (  606 weights): val RMS 0.412 % (seeds 0.337-0.459), median best epoch 24840
+  size   80 ( 1206 weights): val RMS 0.359 % (seeds 0.286-0.398), median best epoch 13860
+  size  160 ( 2406 weights): val RMS 0.331 % (seeds 0.279-0.364), median best epoch 15720
+  size  320 ( 4806 weights): val RMS 0.276 % (seeds 0.238-0.317), median best epoch 17660   <- chosen
+
+final models (results/final.pt): mlp_relu size 640 (representative seed 0), mlp_tanh size 320 (representative seed 1), kbnn_lin size 320 (representative seed 0)

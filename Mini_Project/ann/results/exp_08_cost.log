@@ -1,0 +1,9 @@
+mlp_relu single:  18.7 s for 60000 epochs; epochs to val RMS 1 % / 0.5 %: 1520 / 8160 (median over networks, 1/1 reach 0.5 %); best val RMS 0.370 %
+mlp_relu batch5:  18.7 s for 60000 epochs; epochs to val RMS 1 % / 0.5 %: 1960 / 11000 (median over networks, 5/5 reach 0.5 %); best val RMS 0.413 %
+mlp_relu eval: CPU single 9.1 us; per point in batches of 100000: CPU 66.3 ns, GPU 1.30 ns
+mlp_tanh single:  19.2 s for 60000 epochs; epochs to val RMS 1 % / 0.5 %: 3480 / 13000 (median over networks, 1/1 reach 0.5 %); best val RMS 0.376 %
+mlp_tanh batch5:  19.8 s for 60000 epochs; epochs to val RMS 1 % / 0.5 %: 3360 / 17500 (median over networks, 3/5 reach 0.5 %); best val RMS 0.458 %
+mlp_tanh eval: CPU single 9.1 us; per point in batches of 100000: CPU 6.8 ns, GPU 0.53 ns
+kbnn_lin single:  44.8 s for 60000 epochs; epochs to val RMS 1 % / 0.5 %: 1100 / 8180 (median over networks, 1/1 reach 0.5 %); best val RMS 0.442 %
+kbnn_lin batch5:  46.4 s for 60000 epochs; epochs to val RMS 1 % / 0.5 %: 1100 / 7700 (median over networks, 3/5 reach 0.5 %); best val RMS 0.481 %
+kbnn_lin eval: CPU single 45.0 us; per point in batches of 100000: CPU 50.8 ns, GPU 2.33 ns

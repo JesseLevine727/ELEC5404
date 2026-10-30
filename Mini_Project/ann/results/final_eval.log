@@ -1,0 +1,18 @@
+
+== mlp_relu: 1 hidden layer(s) x 50, 352 weights; |% error| mean +- sd over 5 seeds [representative network]
+  train  td avg 0.405 +- 0.048 [0.362]  max 3.11 +- 0.78 [2.10]   E avg 0.130 +- 0.014 [0.117]  max 0.94 +- 0.09 [0.82]
+  val    td avg 0.427 +- 0.051 [0.375]  max 3.04 +- 0.66 [2.71]   E avg 0.132 +- 0.015 [0.122]  max 0.81 +- 0.11 [0.96]
+  test   td avg 0.446 +- 0.058 [0.413]  max 6.03 +- 1.81 [4.48]   E avg 0.131 +- 0.015 [0.114]  max 0.89 +- 0.19 [1.13]
+  extrap td avg 4.159 +- 0.917 [4.472]  max 16.44 +- 2.68 [16.21]   E avg 0.523 +- 0.228 [0.928]  max 2.41 +- 0.52 [3.33]
+
+== mlp_tanh: 1 hidden layer(s) x 12, 86 weights; |% error| mean +- sd over 5 seeds [representative network]
+  train  td avg 0.430 +- 0.016 [0.402]  max 4.02 +- 0.48 [3.26]   E avg 0.172 +- 0.036 [0.184]  max 1.43 +- 0.23 [1.56]
+  val    td avg 0.438 +- 0.017 [0.412]  max 3.85 +- 0.35 [3.41]   E avg 0.166 +- 0.031 [0.179]  max 1.10 +- 0.16 [1.29]
+  test   td avg 0.441 +- 0.024 [0.394]  max 5.17 +- 0.30 [4.65]   E avg 0.169 +- 0.031 [0.185]  max 1.55 +- 0.28 [1.62]
+  extrap td avg 3.642 +- 1.061 [2.891]  max 20.76 +- 4.53 [18.71]   E avg 2.725 +- 1.749 [2.107]  max 10.77 +- 5.06 [8.68]
+
+== kbnn_lin: 1 hidden layer(s) x 25, 381 weights; |% error| mean +- sd over 5 seeds [representative network]
+  train  td avg 0.393 +- 0.038 [0.328]  max 2.63 +- 0.58 [1.75]   E avg 0.103 +- 0.009 [0.093]  max 1.32 +- 0.18 [1.19]
+  val    td avg 0.449 +- 0.040 [0.375]  max 2.81 +- 0.51 [2.92]   E avg 0.102 +- 0.010 [0.090]  max 0.64 +- 0.14 [0.47]
+  test   td avg 0.454 +- 0.053 [0.375]  max 3.47 +- 0.83 [2.45]   E avg 0.102 +- 0.008 [0.093]  max 0.66 +- 0.17 [0.50]
+  extrap td avg 0.606 +- 0.041 [0.540]  max 2.88 +- 0.23 [2.54]   E avg 0.184 +- 0.046 [0.212]  max 1.13 +- 0.18 [1.13]
