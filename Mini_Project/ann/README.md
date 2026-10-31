@@ -12,6 +12,11 @@ PyTorch code for the models in `PROJECT_PLAN.md` section 5. Data: `../cadence/la
 | `exp_06_target.py` | final sizes: the smallest network with training and validation errors ≤ 0.5 % (writes `results/final.pt`) |
 | `SIZING.md` | how width and depth were chosen, step by step |
 | `final_eval.py` | one-time evaluation of the frozen models (`results/final_eval.csv`) |
+| `exp_07_data_eff.py`, `exp_08_cost.py` | data efficiency (frozen architectures on the first N training points); training and evaluation cost |
+| `figures.py` | all report figures from the saved results (`figs/*.pdf`, PNG previews); Fig 1(b) from `../cadence/latch/data/fig1_waves.npz` |
+| `tables.py` | report Tables 1–6 from the saved results: `tables/tables.tex` (booktabs, to `\input`), `tables/tables.md`, `tables/preview.tex` |
+| `tikz/fig2_structures.tex` | Fig 2, MLP and KBNN structures (compiled copy in `figs/`); Fig 1(a) is `../cadence/latch/tikz/strongarm.tex` |
+| `meta.py`, `exp_09_meta.py` | SAR metastability error rate (threshold sum, KBNN closed form, GPU Monte Carlo) and the Fig 9 / Table 5–6 results |
 | `show_history.py` | loss vs epoch table from a saved history |
 | `results/` | per-model CSV, weights (`.pt`, rebuild with `nets.rebuild`), loss histories (`_hist.npz`), logs |
 
@@ -123,3 +128,94 @@ Test and extrapolation errors are |% error|, mean over 5 seeds.
 - Fitting the law to the MLPs' outputs gives the slopes they extrapolate with:
   - ReLU MLP τ: 27–67 % too high at 7 of the 9 slices, within 8 % only at the two VDD 0.9 V slices.
   - tanh MLP τ: 30 % off on average; its energy slope s ranges from 0.39 down to −0.09 against 0.54–0.95.
+
+**Fig 6, data efficiency** (`fig6_data_efficiency`, exp_07). The frozen architectures were retrained on the first N training points (Sobol prefixes), 5 seeds each; early stopping used the full validation set. Mean t_d error in ps, mean over seeds:
+
+| N | 50 | 100 | 200 | 400 | 800 | 1600 | 2800 |
+|---|---|---|---|---|---|---|---|
+| Test: ReLU MLP | 5.8 | 3.2 | 1.8 | 1.1 | 0.83 | 0.54 | 0.41 |
+| Test: tanh MLP | 2.4 | 0.68 | 0.56 | 0.47 | 0.45 | 0.47 | 0.43 |
+| Test: KBNN | 3.9 | 2.6 | 1.7 | 1.1 | 0.85 | 0.57 | 0.48 |
+| Extrap: ReLU MLP | 13.7 | 14.3 | 9.4 | 9.1 | 8.5 | 6.6 | 7.0 |
+| Extrap: tanh MLP | 11.2 | 7.6 | 6.4 | 6.0 | 5.5 | 5.9 | 4.9 |
+| Extrap: KBNN | 8.1 | 4.9 | 2.7 | 1.9 | 1.5 | 1.3 | 1.1 |
+
+- **In range, the KBNN is no more data-efficient** than the ReLU MLP; the two curves overlap. The tanh MLP needs the least data, reaching 0.7 ps with 100 points.
+- **Extrapolating, the KBNN with 200 points (2.7 ps) beats both MLPs trained on all 2800 (4.9–7.0 ps).** More data barely helps the MLPs there: 2800 points give only about 2× less error than 50. The KBNN's error falls steadily with N, because its τ and t₀ get more accurate.
+- Energy extrapolation is the same story: the KBNN at 200 points (0.34 %) beats the MLPs at 2800 (0.68 % and 1.6 %).
+- At N = 2800 the numbers differ slightly from the frozen models (e.g. KBNN 1.09 vs 1.17 ps extrap): same seeds, but different random draws in a different batch. That is the seed-to-seed spread.
+
+**Fig 7 and Table 4, training and evaluation cost** (`fig7_training`, exp_08; RTX 5080, float32, full-batch Adam).
+
+| | ReLU MLP 1×50 | tanh MLP 1×12 | KBNN 1×25 |
+|---|---|---|---|
+| Weights | 352 | 86 | 381 |
+| Time per epoch | 0.31 ms | 0.33 ms | 0.77 ms |
+| 60k epochs, 1 network / 5 seeds together | 18.7 s / 18.7 s | 19.2 s / 19.8 s | 44.8 s / 46.4 s |
+| Epochs to validation RMS 1 % | 1500–2000 | 3400–3500 | 1100 |
+| Epochs to E_d = 0.5 % | 8200–11000 | 13000–17500 | 7700–8200 |
+| Time to E_d | ≈ 3.4 s | ≈ 5.8 s | ≈ 6.0 s |
+| One prediction, CPU (PyTorch call) | 9 µs | 9 µs | 45 µs |
+| Per prediction in batches of 10⁵, CPU / GPU | 66 / 1.3 ns | 6.8 / 0.53 ns | 51 / 2.3 ns |
+| Spectre, per point (for comparison) | ≈ 0.3 s | | |
+
+- **The KBNN converges in the fewest epochs:** 1 % at 1100 epochs vs 1500–3500. It starts from the nominal log law, so its first epochs are already about 20 % error rather than 30 %.
+- **Each KBNN epoch costs about 2.4× more,** because there are two sub-networks and the correction is evaluated twice (at ΔV_in and at 0). So its time to E_d is similar to the MLPs': 3–6 s for all three.
+- One network or five seeds together take the same time: these networks are too small to keep the GPU busy, so the batch is free.
+- The epochs to E_d are medians over the seeds that reached it on their own: 5 of 5 for the ReLU MLP, 3 of 5 for the others. The selection rule uses the mean over seeds, which is just under 0.5 %.
+- **Cost is dominated by data, not training:** the 2800 training points took about 14 min of Spectre (≈ 0.3 s each), against seconds of training.
+- **Evaluation:** a model is about 7000× (KBNN) to 30 000× (MLPs) faster than Spectre for one prediction, and about 10⁸× in GPU batches. A single prediction's time is mostly PyTorch call overhead.
+
+## Application: SAR ADC metastability error rate (`meta.py`, `exp_09_meta.py`; Fig 9, Table 5)
+
+**Setup** (PROJECT_PLAN.md section 7):
+- 10-bit asynchronous SAR. Sampling takes 25 % of the period, and each comparison is followed by 200 ps of overhead.
+- Full scale 2·VDD, VCM = VDD/2, uniform input.
+- The rate is the sum over the 1023 comparison thresholds of 2·ΔV_meta / V_FS, with each model's delay curve inverted at the time left. For the KBNN this has a closed form.
+- **Spectre reference:** the same calculation on delay curves simulated directly (85 points from 10 fV to VDD per condition, 0.25 ps max step), at VDD 0.9/1.0/1.1 V × 0/27/85 °C.
+  - It is trusted down to 1e-10 per conversion: below about 1 pV Spectre's delay is uncertain by about 1 ps (PROJECT_PLAN.md section 7).
+  - At the inputs it shares with the dataset's 1 ps-step slices, it agrees within 27 fs.
+
+**Checks of the method:**
+- **Brute-force GPU Monte Carlo** of whole conversions agrees with the threshold sum within 3 % for all three models, at rates from 3e-7 to 1e-2. The counting noise there is 6–9 %. That took 10⁹ conversions for the KBNN and 2×10⁸ for each MLP.
+- **The KBNN closed form** matches the inverted delay curve within 0.03 %.
+
+**Maximum sampling rate for 1e-9 per conversion, and each model's predicted rate where Spectre gives 1e-9** (median of 5 seeds):
+
+| VDD, T | Spectre f_max (MS/s) | f_max error: KBNN | ReLU MLP | tanh MLP | Rate ÷ Spectre's: KBNN | ReLU MLP | tanh MLP |
+|---|---|---|---|---|---|---|---|
+| 0.9 V, 0 °C | 209.7 | +0.5 % | −0.7 % | +5.3 % | 0.38 | 3.6 | 0 (no errors) |
+| 0.9 V, 27 °C | 209.1 | +0.4 % | −1.1 % | +5.0 % | 0.43 | 6.3 | 0 (no errors) |
+| 0.9 V, 85 °C | 202.9 | +0.3 % | −0.5 % | +5.3 % | 0.57 | 2.5 | 0 (no errors) |
+| 1.0 V, 0 °C | 255.3 | −0.1 % | −5.3 % | −0.7 % | 1.4 | 2.6e3 | 20 |
+| 1.0 V, 27 °C | 251.6 | −0.2 % | −4.9 % | −0.1 % | 1.8 | 1.7e3 | 2 |
+| 1.0 V, 85 °C | 242.2 | −0.2 % | −4.2 % | +1.1 % | 1.7 | 6.8e2 | 8.5e-5 |
+| 1.1 V, 0 °C | 284.5 | +0.0 % | −5.7 % | −3.0 % | 0.85 | 1.5e4 | 8e3 |
+| 1.1 V, 27 °C | 279.6 | +0.1 % | −5.5 % | −2.5 % | 0.71 | 9.9e3 | 5.1e3 |
+| 1.1 V, 85 °C | 269.1 | −0.1 % | −5.0 % | −1.3 % | 1.7 | 5.6e3 | 1.1e3 |
+
+- **The KBNN predicts the error rate within a factor of 0.4–1.8 at all 9 conditions,** and the maximum sampling rate within 0.5 %.
+  - Its largest misses are at VDD 0.9 V, where its learned τ is 4–6 % low (17.8 vs 19.0 ps). An error δτ shifts the rate by about exp(slack·δτ/τ²), with the slack about 20 τ.
+  - Elsewhere τ is within 1.5 % and t₀ within 0.5 ps.
+- **The ReLU MLP overestimates the rate by up to 4 decades** (10³–10⁴× at 1.0–1.1 V). It extrapolates with its last slope, which is 30–70 % too steep there; in Fig 9 its curve is visibly too shallow.
+- **The tanh MLP is wrong in both directions.** Its delay levels off below about 10 µV, so it predicts no errors at all at VDD 0.9 V and 10³–10⁴× too many at 1.1 V. Its seeds disagree by up to 9 decades.
+- **Extrapolation-only check:** with the other 9 delays taken from Spectre, so that only the stuck comparison comes from the model, the ratios hardly change (`exp_09_meta.log`). The errors are the extrapolation's, not the in-range fit's or the 0.3 V clamp's.
+- **The speed limit is robust; the error rate is not.** The cliff is so steep (about 10⁻³ per 6 MS/s) that even the MLPs place f_max within 1–6 %. A 6 % f_max error is the same as a 10⁴× rate error. A designer who sets f_s from the rate spec needs the KBNN; one who only wants the speed limit could live with any model.
+
+**Fig 9b, design use:** the KBNN's f_max(1e-9) vs VDD at 0/27/85 °C is a continuous curve with no new simulations, and it meets the Spectre reference at all 9 points (`fig9b_fmax_vdd`).
+
+**Table 5, cost of a metastability rate** (nominal condition; RTX 5080; Spectre time per comparison from the dataset runs):
+
+| Route | Cost |
+|---|---|
+| Brute-force Spectre (1e-9 to ±10 % needs about 10¹¹ conversions, i.e. 10¹² comparisons at ≈ 0.3 s each) | ≈ 10⁴ years |
+| Brute-force GPU Monte Carlo with a model (10⁹ conversions) | KBNN 43 s, ReLU MLP 26 s, tanh MLP 12 s; ≈ 1 h for 10¹¹ |
+| Threshold sum with a model (delay table + 1023 thresholds) | 0.2–0.4 ms for the table, 0.17 ms per f_s |
+| KBNN closed form | 5 µs per f_s |
+| Threshold sum with Spectre delays (85 simulations per condition) | ≈ 40 s of Spectre per condition |
+
+- **The last row is the honest comparison.** With the threshold sum, a Spectre reference costs only about 85 simulations per condition, so the neural model's speed is not what makes the rate computable.
+- The KBNN adds three things:
+  - **Continuous coverage:** the 63 conditions of Fig 9b cost nothing, against about 45 min of Spectre.
+  - **Validity below Spectre's numerical floor:** rates under about 1e-10 need inputs below 0.1 pV, where the log law is the only basis.
+  - **A closed-form design equation**, ln(rate) linear in the window: rate = (2 mV / V_FS)·Σ_j exp(−(t_left,j − t₀)/τ).

@@ -296,7 +296,120 @@ def fig8():
                   f"{r['mlp_relu'][f'model_{n}']:8.3f}  {r['mlp_tanh'][f'model_{n}']:8.3f}")
 
 
-FIGURES = dict(sizing=fig_sizing, fig4=fig4, fig5=fig5, fig6=fig6, fig7=fig7, fig8=fig8)
+def fig9():
+    h = np.load(os.path.join(RESULTS, "exp_09_meta.npz"))
+    rows = read_csv("exp_09_meta")
+    fs = h["fs"] / 1e6
+    floor = 1e-16  # plotted rates are clipped here; a model at the floor predicts no errors
+    fig = plt.figure(figsize=(7, 5.4))
+    gs = fig.add_gridspec(2, 3, height_ratios=(1, 1))
+    for i, (vdd, temp, title) in enumerate(((0.9, 85, "(a) VDD 0.9 V, 85 °C (slowest)"), (1.0, 27, "(b) VDD 1.0 V, 27 °C (nominal)"),
+                                            (1.1, 0, "(c) VDD 1.1 V, 0 °C (fastest)"))):
+        ax = fig.add_subplot(gs[0, i])
+        tag = f"vdd{vdd:g}_t{temp}"
+        ref = h[f"{tag}_spectre"]
+        show = ref >= 1e-10
+        for fam in ORDER:
+            r = np.maximum(h[f"{tag}_{fam}"], floor)
+            ax.fill_between(fs, r.min(0), r.max(0), color=COLOR[fam], alpha=0.15, lw=0)
+            ax.plot(fs, np.median(r, 0), color=COLOR[fam], ls=DASH[fam], lw=1.2, label=label(fam))
+        ax.plot(fs[show], ref[show], color=INK, lw=1.0, label="Spectre reference (to 1e-10)")
+        lo = fs[np.argmax(ref > 1e-14)]
+        hi = fs[np.argmax(ref > 0.5)]
+        pad = 0.35 * (hi - lo)
+        ax.set(yscale="log", ylim=(1e-15, 2), xlim=(lo - pad, hi + 0.6 * pad), title=title, xlabel="sampling rate (MS/s)")
+        if i == 0:
+            ax.set_ylabel("metastability errors per conversion")
+    h_, l_ = fig.axes[0].get_legend_handles_labels()
+    fig.legend(h_, l_, loc="upper center", ncol=4, bbox_to_anchor=(0.5, 1.01), fontsize=6.5)
+    names = [f"{float(r['vdd']):.1f} V\n{float(r['temp']):.0f} °C" for r in rows]
+    x = np.arange(len(rows))
+    off = {"kbnn_lin": -0.2, "mlp_relu": 0.0, "mlp_tanh": 0.2}
+    ax = fig.add_subplot(gs[1, :2])
+    for fam in ORDER:
+        med = np.array([float(r[f"{fam}_rate_at_ref_1e-09"]) for r in rows]) / 1e-9
+        lo_ = np.array([float(r[f"{fam}_rate_at_ref_1e-09_min"]) for r in rows]) / 1e-9
+        hi_ = np.array([float(r[f"{fam}_rate_at_ref_1e-09_max"]) for r in rows]) / 1e-9
+        bottom = 1e-7
+        y = np.maximum(med, bottom)
+        ax.errorbar(x + off[fam], y, yerr=[y - np.maximum(lo_, bottom), np.maximum(hi_, bottom) - y], ls="none",
+                    marker=MARK[fam], ms=4, color=COLOR[fam], mfc=COLOR[fam] if fam.startswith("kbnn") else "white",
+                    mew=0.9, elinewidth=0.7, capsize=0)
+        for k in np.flatnonzero(med < bottom):
+            ax.annotate("0", (x[k] + off[fam], bottom), xytext=(0, -9), textcoords="offset points", ha="center",
+                        fontsize=6, color=COLOR[fam])
+    ax.axhline(1, color=MUTED, lw=0.8)
+    ax.set(yscale="log", ylim=(3e-8, 3e5), xticks=x, xticklabels=names, xlim=(-0.5, len(rows) - 0.5),
+           ylabel="predicted rate ÷ Spectre's",
+           title="(d) Error-rate prediction where Spectre gives 1e-9 (0 = predicts no errors)")
+    ax.tick_params(axis="x", labelsize=6)
+    bx = fig.add_subplot(gs[1, 2])
+    for fam in ORDER:
+        e = np.array([100 * (float(r[f"{fam}_fs_1e-09"]) / float(r["spectre_fs_1e-09"]) - 1) for r in rows])
+        bx.plot(x, e, ls="none", marker=MARK[fam], ms=4, color=COLOR[fam], mfc=COLOR[fam] if fam.startswith("kbnn") else "white",
+                mew=0.9)
+    bx.axhline(0, color=MUTED, lw=0.8)
+    bx.set(xticks=x, xticklabels=[n.replace("\n", " ") for n in names], ylabel="f_max error vs Spectre (%)",
+           title="(e) Max. sampling rate for 1e-9", xlim=(-0.5, len(rows) - 0.5))
+    bx.tick_params(axis="x", labelsize=5.5, rotation=90)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    save(fig, "fig9_metastability")
+    # f_max(1e-9) vs VDD: the KBNN as a design tool, with the Spectre reference at the 9 conditions
+    fig, ax = plt.subplots(figsize=(3.5, 2.6))
+    vg = h["vdd_grid"]
+    tcol = {0: "#2a78d6", 27: INK2, 85: "#e34948"}
+    for temp in (0, 27, 85):
+        f = h[f"fmax_t{temp}_kbnn_lin"]
+        ax.fill_between(vg, f.min(1), f.max(1), color=tcol[temp], alpha=0.15, lw=0)
+        ax.plot(vg, np.median(f, 1), color=tcol[temp], lw=1.2, label=f"KBNN, {temp} °C")
+        pts = [(float(r["vdd"]), float(r["spectre_fs_1e-09"])) for r in rows if float(r["temp"]) == temp]
+        ax.plot(*zip(*pts), "o", ms=4, color=tcol[temp], mec="white", mew=0.6)
+    ax.plot([], [], "o", ms=4, color=INK2, mec="white", label="Spectre reference")
+    ax.set(xlabel="VDD (V)", ylabel="max. sampling rate for 1e-9 (MS/s)")
+    ax.legend(loc="upper left", fontsize=6.5)
+    fig.tight_layout()
+    save(fig, "fig9b_fmax_vdd")
+
+
+def fig1():
+    """Fig 1(b): one comparison from reset at the nominal condition for four input levels (Spectre,
+    cadence/latch/scripts/fig1_waves.py). Fig 1(a), the schematic, is cadence/latch/tikz/strongarm.tex."""
+    w = np.load(os.path.join(os.path.dirname(DSET), "fig1_waves.npz"))
+    ramp = ["#86b6ef", "#3987e5", "#1c5cab", "#0d366b"]  # ordinal: darker = smaller input, closer to metastability
+    names = {1e-1: "100 mV", 1e-3: "1 mV", 1e-6: "1 µV", 1e-9: "1 nV"}
+    fig, (ax, bx) = plt.subplots(2, 1, figsize=(3.5, 4.2), sharex=True, gridspec_kw=dict(height_ratios=(1.15, 1)))
+    for i, dv in enumerate(w["dvin"]):
+        t = w[f"t_{i}"] * 1e12
+        clk = w[f"clk_{i}"]
+        k = np.flatnonzero((clk[:-1] < 0.5) & (clk[1:] >= 0.5))[0]
+        t0 = t[k] + (0.5 - clk[k]) / (clk[k + 1] - clk[k]) * (t[k + 1] - t[k])
+        x = t - t0
+        if i == 0:
+            for a in (ax, bx):
+                a.plot(x, clk, color=MUTED, lw=0.9)
+            ax.text(-35, 0.93, "CLK", color=INK2, fontsize=7, va="top")
+        ax.plot(x, w[f"x_{i}"], color=ramp[i], lw=1.1)
+        ax.plot(x, w[f"y_{i}"], color=ramp[i], lw=1.1)
+        out = w[f"outp_{i}"]
+        j = np.flatnonzero((x[:-1] > 0) & (out[:-1] < 0.5) & (out[1:] >= 0.5))[0]  # OUTP wins (dvin > 0)
+        td = x[j] + (0.5 - out[j]) / (out[j + 1] - out[j]) * (x[j + 1] - x[j])
+        bx.plot(x, out, color=ramp[i], lw=1.1)
+        ax.plot([], [], color=ramp[i], lw=1.1, label=f"{names[dv]}: {td:.0f} ps")
+        bx.plot(td, 0.5, "o", ms=3.5, color=ramp[i], mec="white", mew=0.5, zorder=5)
+    for a in (ax, bx):
+        a.axvline(0, color=AXIS, lw=0.6)
+        a.set(xlim=(-40, 400), ylim=(-0.05, 1.08))
+    bx.axhline(0.5, color=AXIS, lw=0.6)
+    bx.text(395, 0.53, "VDD/2", ha="right", va="bottom", fontsize=6.5, color=INK2)
+    ax.set(ylabel="X, Y (V)", title="(b) One comparison: VCM 0.5 V, VDD 1.0 V, 27 °C")
+    bx.set(ylabel="OUTP (V)", xlabel="time after CLK crosses VDD/2 (ps)")
+    ax.legend(title="ΔV_in: t_d", loc="center right", bbox_to_anchor=(1.0, 0.5), fontsize=6.5, title_fontsize=6.5,
+              handlelength=1.2)
+    fig.tight_layout()
+    save(fig, "fig1b_waveforms")
+
+
+FIGURES = dict(fig1=fig1, sizing=fig_sizing, fig4=fig4, fig5=fig5, fig6=fig6, fig7=fig7, fig8=fig8, fig9=fig9)
 if __name__ == "__main__":
     os.makedirs(FIGS, exist_ok=True)
     for name in sys.argv[1:] or FIGURES:

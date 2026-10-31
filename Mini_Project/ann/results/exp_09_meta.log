@@ -1,0 +1,124 @@
+
+VDD 0.9 V, 0 C (85 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    226.32 /  217.70 /  209.75 /     nan
+  kbnn_lin   226.44 /  218.24 /  210.75 /  203.75   [1e-9: 210.22-211.97]   rate where Spectre is 1e-6 / 1e-9: 6.2e-07 / 3.8e-10 (extrapolation only: 3.8e-07 / 2.4e-10)
+  mlp_relu   226.13 /  216.81 /  208.19 /  200.22   [1e-9: 206.78-208.54]   rate where Spectre is 1e-6 / 1e-9: 2.0e-06 / 3.6e-09 (extrapolation only: 2.1e-06 / 3.8e-09)
+  mlp_tanh   227.37 /  223.43 /  220.86 /  220.45   [1e-9: 218.49-224.51]   rate where Spectre is 1e-6 / 1e-9: 1.1e-37 / 1.1e-37 (extrapolation only: 1.1e-37 / 1.1e-37)
+  KBNN closed form vs table: max |ln ratio| 6.4e-05
+
+VDD 0.9 V, 27 C (85 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    225.29 /  216.85 /  209.08 /     nan
+  kbnn_lin   225.42 /  217.42 /  209.97 /  203.01   [1e-9: 209.68-210.19]   rate where Spectre is 1e-6 / 1e-9: 6.3e-07 / 4.3e-10 (extrapolation only: 4.8e-07 / 3.3e-10)
+  mlp_relu   224.73 /  215.43 /  206.88 /  198.93   [1e-9: 205.46-207.19]   rate where Spectre is 1e-6 / 1e-9: 3.1e-06 / 6.3e-09 (extrapolation only: 2.7e-06 / 5.5e-09)
+  mlp_tanh   226.14 /  221.51 /  219.53 /  219.01   [1e-9: 217.75-223.30]   rate where Spectre is 1e-6 / 1e-9: 1.1e-37 / 1.1e-37 (extrapolation only: 1.1e-37 / 1.1e-37)
+  KBNN closed form vs table: max |ln ratio| 6.3e-05
+
+VDD 0.9 V, 85 C (85 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    218.74 /  210.48 /  202.94 /     nan
+  kbnn_lin   218.83 /  210.91 /  203.54 /  196.57   [1e-9: 203.28-203.67]   rate where Spectre is 1e-6 / 1e-9: 6.9e-07 / 5.7e-10 (extrapolation only: 6.3e-07 / 5.5e-10)
+  mlp_relu   218.79 /  210.09 /  201.89 /  194.30   [1e-9: 200.24-202.51]   rate where Spectre is 1e-6 / 1e-9: 1.4e-06 / 2.5e-09 (extrapolation only: 1.4e-06 / 2.4e-09)
+  mlp_tanh   219.81 /  216.13 /  213.79 /  213.47   [1e-9: 213.21-218.93]   rate where Spectre is 1e-6 / 1e-9: 1.1e-37 / 1.1e-37 (extrapolation only: 1.1e-37 / 1.1e-37)
+  KBNN closed form vs table: max |ln ratio| 4.3e-05
+
+VDD 1.0 V, 0 C (85 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    267.36 /  261.19 /  255.33 /     nan
+  kbnn_lin   267.09 /  260.96 /  255.07 /  249.44   [1e-9: 254.37-255.93]   rate where Spectre is 1e-6 / 1e-9: 1.3e-06 / 1.4e-09 (extrapolation only: 1.0e-06 / 1.1e-09)
+  mlp_relu   265.15 /  253.62 /  241.89 /  231.14   [1e-9: 239.59-242.62]   rate where Spectre is 1e-6 / 1e-9: 8.9e-05 / 2.6e-06 (extrapolation only: 7.3e-05 / 2.2e-06)
+  mlp_tanh   265.59 /  257.87 /  253.46 /  253.05   [1e-9: 249.50-258.43]   rate where Spectre is 1e-6 / 1e-9: 3.5e-05 / 2.0e-08 (extrapolation only: 2.9e-05 / 1.5e-08)
+  KBNN closed form vs table: max |ln ratio| 1.5e-04
+
+VDD 1.0 V, 27 C (85 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    263.78 /  257.52 /  251.61 /     nan
+  kbnn_lin   263.46 /  257.16 /  251.17 /  245.46   [1e-9: 251.06-251.94]   rate where Spectre is 1e-6 / 1e-9: 1.5e-06 / 1.8e-09 (extrapolation only: 1.1e-06 / 1.2e-09)
+  mlp_relu   261.77 /  250.77 /  239.23 /  228.70   [1e-9: 237.24-240.29]   rate where Spectre is 1e-6 / 1e-9: 5.8e-05 / 1.7e-06 (extrapolation only: 5.4e-05 / 1.4e-06)
+  mlp_tanh   262.20 /  255.07 /  251.26 /  250.25   [1e-9: 246.62-256.07]   rate where Spectre is 1e-6 / 1e-9: 2.7e-05 / 2.0e-09 (extrapolation only: 2.3e-05 / 1.8e-09)
+  KBNN closed form vs table: max |ln ratio| 1.5e-04
+
+VDD 1.0 V, 85 C (85 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    254.69 /  248.23 /  242.21 /     nan
+  kbnn_lin   254.65 /  248.03 /  241.77 /  235.93   [1e-9: 241.60-242.61]   rate where Spectre is 1e-6 / 1e-9: 1.3e-06 / 1.7e-09 (extrapolation only: 1.1e-06 / 1.3e-09)
+  mlp_relu   252.48 /  242.79 /  232.08 /  222.09   [1e-9: 230.30-233.78]   rate where Spectre is 1e-6 / 1e-9: 4.9e-05 / 6.8e-07 (extrapolation only: 3.5e-05 / 5.0e-07)
+  mlp_tanh   253.57 /  247.18 /  244.95 /  243.20   [1e-9: 240.11-249.45]   rate where Spectre is 1e-6 / 1e-9: 5.3e-06 / 8.5e-14 (extrapolation only: 3.2e-06 / 3.7e-14)
+  KBNN closed form vs table: max |ln ratio| 1.1e-04
+
+VDD 1.1 V, 0 C (86 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    292.96 /  288.64 /  284.48 /     nan
+  kbnn_lin   293.40 /  288.94 /  284.60 /  280.38   [1e-9: 284.32-285.07]   rate where Spectre is 1e-6 / 1e-9: 6.3e-07 / 8.5e-10 (extrapolation only: 1.2e-06 / 1.6e-09)
+  mlp_relu   291.16 /  279.47 /  268.20 /  255.49   [1e-9: 264.55-269.48]   rate where Spectre is 1e-6 / 1e-9: 1.7e-04 / 1.5e-05 (extrapolation only: 1.6e-04 / 1.4e-05)
+  mlp_tanh   291.42 /  282.06 /  275.92 /  272.96   [1e-9: 269.16-279.07]   rate where Spectre is 1e-6 / 1e-9: 1.4e-04 / 8.0e-06 (extrapolation only: 1.3e-04 / 7.4e-06)
+  KBNN closed form vs table: max |ln ratio| 3.0e-04
+
+VDD 1.1 V, 27 C (86 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    288.52 /  283.97 /  279.62 /     nan
+  kbnn_lin   288.61 /  284.16 /  279.86 /  275.68   [1e-9: 279.27-280.12]   rate where Spectre is 1e-6 / 1e-9: 7.7e-07 / 7.1e-10 (extrapolation only: 8.8e-07 / 9.2e-10)
+  mlp_relu   286.83 /  275.31 /  264.19 /  252.05   [1e-9: 261.03-266.27]   rate where Spectre is 1e-6 / 1e-9: 1.2e-04 / 9.9e-06 (extrapolation only: 1.1e-04 / 8.8e-06)
+  mlp_tanh   287.17 /  277.84 /  272.77 /  270.18   [1e-9: 266.13-275.99]   rate where Spectre is 1e-6 / 1e-9: 1.1e-04 / 5.1e-06 (extrapolation only: 1.0e-04 / 4.7e-06)
+  KBNN closed form vs table: max |ln ratio| 2.8e-04
+
+VDD 1.1 V, 85 C (86 Spectre points from 1e-14 V). fs (MS/s) at rate 1e-3 / 1e-6 / 1e-9 / 1e-12; model = median of 5 seeds [min-max]:
+  Spectre    278.74 /  273.77 /  269.11 /     nan
+  kbnn_lin   278.37 /  273.51 /  268.81 /  264.28   [1e-9: 268.51-269.51]   rate where Spectre is 1e-6 / 1e-9: 1.5e-06 / 1.7e-09 (extrapolation only: 7.7e-07 / 8.4e-10)
+  mlp_relu   276.94 /  266.02 /  255.60 /  244.80   [1e-9: 253.21-258.19]   rate where Spectre is 1e-6 / 1e-9: 8.9e-05 / 5.6e-06 (extrapolation only: 6.5e-05 / 4.4e-06)
+  mlp_tanh   277.51 /  268.97 /  265.68 /  263.87   [1e-9: 260.32-268.52]   rate where Spectre is 1e-6 / 1e-9: 5.8e-05 / 1.1e-06 (extrapolation only: 5.2e-05 / 1.0e-06)
+  KBNN closed form vs table: max |ln ratio| 1.2e-04
+
+MC kbnn_lin: 1e+09 conversions (1e+10 delays) in 43.1 s; threshold sum 0.03 ms per fs. Where MC has >= 100 failures and the rate is < 1e-2 (rates 2.8e-07-5.2e-03): |MC / threshold sum - 1| <= 0.032; counting noise 1/sqrt(failures) <= 0.060
+   256.0 MS/s  threshold sum 2.684e-07  MC 2.770e-07  (277 failures)
+   257.0 MS/s  threshold sum 8.314e-07  MC 8.370e-07  (837 failures)
+   258.0 MS/s  threshold sum 2.552e-06  MC 2.567e-06  (2567 failures)
+   259.0 MS/s  threshold sum 7.768e-06  MC 7.746e-06  (7746 failures)
+   260.0 MS/s  threshold sum 2.344e-05  MC 2.354e-05  (23536 failures)
+   261.0 MS/s  threshold sum 7.015e-05  MC 7.050e-05  (70504 failures)
+   262.0 MS/s  threshold sum 2.081e-04  MC 2.090e-04  (208988 failures)
+   263.0 MS/s  threshold sum 6.125e-04  MC 6.138e-04  (613797 failures)
+   264.0 MS/s  threshold sum 1.788e-03  MC 1.789e-03  (1789403 failures)
+   265.0 MS/s  threshold sum 5.177e-03  MC 5.185e-03  (5184754 failures)
+   266.0 MS/s  threshold sum 1.487e-02  MC 1.492e-02  (14923640 failures)
+   267.0 MS/s  threshold sum 4.239e-02  MC 4.284e-02  (42836950 failures)
+   268.0 MS/s  threshold sum 1.200e-01  MC 1.246e-01  (124601400 failures)
+   269.0 MS/s  threshold sum 3.375e-01  MC 4.320e-01  (431993049 failures)
+
+MC mlp_relu: 2e+08 conversions (2e+09 delays) in 5.3 s; threshold sum 0.02 ms per fs. Where MC has >= 100 failures and the rate is < 1e-2 (rates 6.9e-07-9.5e-03): |MC / threshold sum - 1| <= 0.030; counting noise 1/sqrt(failures) <= 0.085
+   249.0 MS/s  threshold sum 6.946e-07  MC 6.900e-07  (138 failures)
+   250.0 MS/s  threshold sum 1.192e-06  MC 1.170e-06  (234 failures)
+   251.0 MS/s  threshold sum 2.037e-06  MC 1.975e-06  (395 failures)
+   252.0 MS/s  threshold sum 3.548e-06  MC 3.620e-06  (724 failures)
+   253.0 MS/s  threshold sum 6.493e-06  MC 6.320e-06  (1264 failures)
+   254.0 MS/s  threshold sum 1.199e-05  MC 1.181e-05  (2362 failures)
+   255.0 MS/s  threshold sum 2.207e-05  MC 2.182e-05  (4365 failures)
+   256.0 MS/s  threshold sum 4.066e-05  MC 4.063e-05  (8127 failures)
+   257.0 MS/s  threshold sum 7.537e-05  MC 7.523e-05  (15047 failures)
+   258.0 MS/s  threshold sum 1.394e-04  MC 1.396e-04  (27929 failures)
+   259.0 MS/s  threshold sum 2.567e-04  MC 2.563e-04  (51255 failures)
+   260.0 MS/s  threshold sum 4.706e-04  MC 4.699e-04  (93989 failures)
+   261.0 MS/s  threshold sum 8.586e-04  MC 8.589e-04  (171775 failures)
+   262.0 MS/s  threshold sum 1.559e-03  MC 1.561e-03  (312261 failures)
+   263.0 MS/s  threshold sum 2.819e-03  MC 2.825e-03  (564956 failures)
+   264.0 MS/s  threshold sum 5.078e-03  MC 5.084e-03  (1016701 failures)
+   265.0 MS/s  threshold sum 9.517e-03  MC 9.538e-03  (1907577 failures)
+   266.0 MS/s  threshold sum 1.872e-02  MC 1.878e-02  (3756099 failures)
+   267.0 MS/s  threshold sum 3.964e-02  MC 3.993e-02  (7985419 failures)
+   268.0 MS/s  threshold sum 9.904e-02  MC 1.016e-01  (20312206 failures)
+   269.0 MS/s  threshold sum 2.750e-01  MC 3.229e-01  (64588457 failures)
+   270.0 MS/s  threshold sum 7.944e-01  MC 7.729e-01  (154586541 failures)
+
+MC mlp_tanh: 2e+08 conversions (2e+09 delays) in 2.5 s; threshold sum 0.02 ms per fs. Where MC has >= 100 failures and the rate is < 1e-2 (rates 5.9e-07-8.2e-03): |MC / threshold sum - 1| <= 0.032; counting noise 1/sqrt(failures) <= 0.092
+   251.0 MS/s  threshold sum 5.776e-07  MC 5.900e-07  (118 failures)
+   252.0 MS/s  threshold sum 1.188e-06  MC 1.160e-06  (232 failures)
+   253.0 MS/s  threshold sum 2.267e-06  MC 2.195e-06  (439 failures)
+   254.0 MS/s  threshold sum 4.105e-06  MC 4.130e-06  (826 failures)
+   255.0 MS/s  threshold sum 7.172e-06  MC 7.015e-06  (1403 failures)
+   256.0 MS/s  threshold sum 1.223e-05  MC 1.202e-05  (2405 failures)
+   257.0 MS/s  threshold sum 2.056e-05  MC 2.032e-05  (4065 failures)
+   258.0 MS/s  threshold sum 3.432e-05  MC 3.423e-05  (6846 failures)
+   259.0 MS/s  threshold sum 5.736e-05  MC 5.720e-05  (11440 failures)
+   260.0 MS/s  threshold sum 9.677e-05  MC 9.669e-05  (19338 failures)
+   261.0 MS/s  threshold sum 1.664e-04  MC 1.665e-04  (33302 failures)
+   262.0 MS/s  threshold sum 2.956e-04  MC 2.954e-04  (59084 failures)
+   263.0 MS/s  threshold sum 5.531e-04  MC 5.520e-04  (110393 failures)
+   264.0 MS/s  threshold sum 1.127e-03  MC 1.127e-03  (225330 failures)
+   265.0 MS/s  threshold sum 2.660e-03  MC 2.664e-03  (532841 failures)
+   266.0 MS/s  threshold sum 8.143e-03  MC 8.164e-03  (1632783 failures)
+   267.0 MS/s  threshold sum 3.242e-02  MC 3.275e-02  (6550316 failures)
+   268.0 MS/s  threshold sum 1.206e-01  MC 1.265e-01  (25302070 failures)
+   269.0 MS/s  threshold sum 3.691e-01  MC 4.862e-01  (97237578 failures)
